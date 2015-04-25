@@ -15,8 +15,10 @@ public:
   modelo();
   void definir_posibles_estados(int N_posibles_estados, double *posibles_estados);
   void llenar();
-  float** estado_actual;
-
+  inline T& operator()( size_t row_index, size_t col_index );
+  inline const T& operator()( size_t row_index, size_t col_index ) const;
+  inline T& at( size_t row_index, size_t col_index );
+  inline const T& at( size_t row_index, size_t col_index ) const;
 
 private:
   vmml::matrix<M,N,T> estado;
@@ -32,8 +34,8 @@ private:
 template< size_t M, size_t N, typename T>
 modelo<M,N,T>::modelo()
 {
-  this->filas = M;
-  this->columnas = N;
+  this->filas = (int)M;
+  this->columnas = (int)N;
   this->llenar();
 }
 
@@ -41,12 +43,14 @@ template< size_t M, size_t N, typename T>
 void modelo<M,N,T>::llenar()
 {
   srand(time(NULL));
+  srand(rand());
+  int random_num;
   for (int fila=0; fila < this->filas; fila++)
   {
     for (int columna=0; columna < this->columnas; columna++)
     {
-      int random_num = rand()%N_posibles_estados;
-      this->estado(fila,columna) = posibles_estados[random_num];
+      random_num = rand()%(this->N_posibles_estados)-1;
+      this->estado(fila, columna) = posibles_estados[random_num];
     }
   }
 }
@@ -59,5 +63,33 @@ void modelo<M,N,T>::definir_posibles_estados(int N_posibles_estados, double *pos
 }
 
 
-template< size_t M, size_t N, typename T>
 
+template< size_t M, size_t N, typename T >
+inline T&
+modelo< M, N, T >::at( size_t row_index, size_t col_index )
+{
+    return this->estado(row_index, col_index);
+}
+
+
+template< size_t M, size_t N, typename T >
+const inline T&
+modelo< M, N, T >::at( size_t row_index, size_t col_index ) const
+{
+    return this->estado(row_index, col_index);
+}
+
+template< size_t M, size_t N, typename T >
+inline T&
+modelo< M, N, T >::operator()( size_t row_index, size_t col_index )
+{
+    return this->estado(row_index, col_index);
+}
+
+
+template< size_t M, size_t N, typename T >
+const inline T&
+modelo< M, N, T >::operator()( size_t row_index, size_t col_index ) const
+{
+    return this->estado(row_index, col_index);
+}

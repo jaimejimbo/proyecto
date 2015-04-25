@@ -1,2 +1,2 @@
 all:
-	g++ main.cc -o metropolis.out
+	g++ -g main.cc -o proyecto
