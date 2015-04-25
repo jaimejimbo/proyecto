@@ -15,7 +15,7 @@ public:
   modelo();
   void definir_posibles_estados(int N_posibles_estados, double *posibles_estados);
   void llenar();
-
+  float** estado_actual;
 
 
 private:
@@ -57,3 +57,7 @@ void modelo<M,N,T>::definir_posibles_estados(int N_posibles_estados, double *pos
   this->posibles_estados = posibles_estados;
   this->N_posibles_estados = N_posibles_estados;
 }
+
+
+template< size_t M, size_t N, typename T>
+
