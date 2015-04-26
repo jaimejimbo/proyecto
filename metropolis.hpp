@@ -6,6 +6,8 @@
 #include "vmmlib/vmmlib.hpp"
 #include <stdlib.h>
 #include <time.h>
+#include <cmath>
+
 
 
 template< size_t M, size_t N, typename T = float>
@@ -19,8 +21,16 @@ public:
   inline const T& operator()( size_t row_index, size_t col_index ) const;
   inline T& at( size_t row_index, size_t col_index );
   inline const T& at( size_t row_index, size_t col_index ) const;
+  void cambiar_estado();
+  double probabilidad(double energia_inicial, double energia_final);
+  double energia();
+  double entropia();
+  void print();
 
 private:
+  double temp;
+  double kb;
+  double A_prob;
   vmml::matrix<M,N,T> estado;
   int filas;
   int columnas;
@@ -31,24 +41,35 @@ private:
 
 
 
-template< size_t M, size_t N, typename T>
-modelo<M,N,T>::modelo()
+
+
+
+
+
+
+
+#define TEMPLATE                  template< size_t M, size_t N, typename T>
+#define MODELO                    modelo<M,N,T>
+#define ADYACENTE(pos, length)    pos<length?pos+1:0
+
+TEMPLATE
+MODELO::modelo()
 {
   this->filas = (int)M;
   this->columnas = (int)N;
 }
 
 
-template< size_t M, size_t N, typename T>
-void modelo<M,N,T>::definir_posibles_estados(int N_posibles_estados_in, double *posibles_estados_in)
+TEMPLATE
+void MODELO::definir_posibles_estados(int N_posibles_estados_in, double *posibles_estados_in)
 {
   this->posibles_estados = posibles_estados_in;
   this->N_posibles_estados = N_posibles_estados_in;
 }
 
 
-template< size_t M, size_t N, typename T>
-void modelo<M,N,T>::llenar()
+TEMPLATE
+void MODELO::llenar()
 {
   srand(time(NULL));
   srand(rand());
@@ -65,32 +86,82 @@ void modelo<M,N,T>::llenar()
 
 
 
-template< size_t M, size_t N, typename T >
+TEMPLATE
 inline T&
-modelo< M, N, T >::at( size_t row_index, size_t col_index )
+MODELO::at( size_t row_index, size_t col_index )
 {
     return this->estado(row_index, col_index);
 }
 
 
-template< size_t M, size_t N, typename T >
+TEMPLATE
 const inline T&
-modelo< M, N, T >::at( size_t row_index, size_t col_index ) const
+MODELO::at( size_t row_index, size_t col_index ) const
 {
     return this->estado(row_index, col_index);
 }
 
-template< size_t M, size_t N, typename T >
+TEMPLATE
 inline T&
-modelo< M, N, T >::operator()( size_t row_index, size_t col_index )
+MODELO::operator()( size_t row_index, size_t col_index )
 {
     return this->estado(row_index, col_index);
 }
 
 
-template< size_t M, size_t N, typename T >
+TEMPLATE
 const inline T&
-modelo< M, N, T >::operator()( size_t row_index, size_t col_index ) const
+MODELO::operator()( size_t row_index, size_t col_index ) const
 {
     return this->estado(row_index, col_index);
+}
+
+
+TEMPLATE
+void MODELO::cambiar_estado()
+{
+  srand(time(NULL));
+  srand(rand());
+  int fila = (int)(rand()%(this->filas));
+  int columna = (int)(rand()%(this->columnas));
+  int indice_estado = (int)(rand()%(this->N_posibles_estados));
+  this->estado(fila,columna) = this->posibles_estados[indice_estado];
+}
+
+TEMPLATE
+void MODELO::print()
+{
+  for (int fila=0; fila<this->filas; fila++)
+  {
+    for (int columna=0; columna<this->columnas; columna++)
+    {
+      cout<<this->estado(fila,columna)<<"\t";
+    }
+    cout<<"\n";
+  }
+}
+
+TEMPLATE
+void MODELO::energia()
+{
+  for (int fila=0; fila<this->filas; fila++)
+  {
+    for (int columna=0; columna<this->columnas; columna++)
+    {
+      
+    }
+    
+  }
+}
+
+TEMPLATE
+double MODELO::probabilidad()
+{
+
+}
+
+TEMPLATE
+double MODELO::entropia()
+{
+
 }
