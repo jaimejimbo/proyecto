@@ -36,30 +36,31 @@ modelo<M,N,T>::modelo()
 {
   this->filas = (int)M;
   this->columnas = (int)N;
-  this->llenar();
 }
+
+
+template< size_t M, size_t N, typename T>
+void modelo<M,N,T>::definir_posibles_estados(int N_posibles_estados_in, double *posibles_estados_in)
+{
+  this->posibles_estados = posibles_estados_in;
+  this->N_posibles_estados = N_posibles_estados_in;
+}
+
 
 template< size_t M, size_t N, typename T>
 void modelo<M,N,T>::llenar()
 {
   srand(time(NULL));
   srand(rand());
-  int random_num;
+  int random_num=0;
   for (int fila=0; fila < this->filas; fila++)
   {
     for (int columna=0; columna < this->columnas; columna++)
     {
-      random_num = rand()%(this->N_posibles_estados)-1;
-      this->estado(fila, columna) = posibles_estados[random_num];
+      random_num = rand()%(this->N_posibles_estados);
+      this->estado(fila, columna) = this->posibles_estados[random_num];
     }
   }
-}
-
-template< size_t M, size_t N, typename T>
-void modelo<M,N,T>::definir_posibles_estados(int N_posibles_estados, double *posibles_estados)
-{
-  this->posibles_estados = posibles_estados;
-  this->N_posibles_estados = N_posibles_estados;
 }
 
 
