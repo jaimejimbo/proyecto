@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 	modelo1.print();
 	modelo1.cambiar_estado();
 	cout<<"Estado final:\n";
-  modelo1.print();
+	modelo1.print();
 }
 
 
