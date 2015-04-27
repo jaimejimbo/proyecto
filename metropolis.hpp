@@ -29,6 +29,12 @@ public:
   double entropia();
   void print(void);
   int **obtener_primeros_vecinos(int fila, int columna);
+  void set_temp(double new_value);
+  void set_kb(double new_value);
+  void set_A_prob(double new_value);
+  void set_influencia_externa(double new_value);
+  void set_condicion_externa(double new_value);
+  void set_influencia_primeros_vecinos(double new_value);
 
 private:
   double temp;
