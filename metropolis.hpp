@@ -24,7 +24,7 @@ public:
   inline T& at( size_t row_index, size_t col_index );
   inline const T& at( size_t row_index, size_t col_index ) const;
   void cambiar_estado();
-  double probabilidad(double E_inicial, double E_final, double influencia_ruido, double ruido, double param_prob);
+  double probabilidad(double E_inicial, double E_final);
   double energia();
   double entropia();
   void print(void);
@@ -137,7 +137,12 @@ void MODELO::cambiar_estado()
   int fila = (int)(rand()%(this->filas));
   int columna = (int)(rand()%(this->columnas));
   int indice_estado = (int)(rand()%(this->N_posibles_estados));
+  T valor_anterior = estado(fila,columna);
+  double E_inicial = this->energia();
   this->estado(fila,columna) = this->posibles_estados[indice_estado];
+  double E_final = this->energia();
+  double prob = this->probabilidad(E_inicial, E_final);
+  if ((rand()*1.0/RAND_MAX) >= prob) this->estado(fila,columna) = valor_anterior;
 }
 
 TEMPLATE
@@ -174,11 +179,14 @@ double MODELO::energia()
 }
 
 TEMPLATE
-double MODELO::probabilidad(double E_inicial, double E_final, double influencia_ruido, double ruido, double param_prob)
+double MODELO::probabilidad(double E_inicial, double E_final)
 {
   double prob=-1.0;
-  if (E_inicial>E_final) prob=param_prob;
-  else prob=param_prob*exp(abs(E_inicial-E_final)/ruido*influencia_ruido);
+  if (E_inicial>E_final) prob=this->A_prob;
+  else{
+    if (this->temp != 0 && this->kb != 0) prob=this->A_prob*exp(abs(E_inicial-E_final)/this->temp*this->kb);
+    else prob=0;
+  }
 #ifdef DEBUG
   if (prob>=0 and prob<=1) return prob;
   else cerr<<"Algo falla al calcular la probabilidad";
