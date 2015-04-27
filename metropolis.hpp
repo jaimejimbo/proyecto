@@ -178,7 +178,7 @@ double MODELO::energia()
         E += this->influencia_primeros_vecinos*vecino_/2; //Divido por 2 porque se están repitiendo emparejamientos
       }
 #else 
-      if ( == this->condicion_externa)
+      if (estado_ == this->condicion_externa)
       {
         E -= this->influencia_externa;
       }
