@@ -9,6 +9,7 @@
 #include <cmath>
 
 #define DEBUG
+#define ESPINES
 
 
 
@@ -166,13 +167,27 @@ double MODELO::energia()
   {
     for (int columna=0; columna<this->columnas; columna++)
     {
+      T estado_ = this->estado(fila,columna);
       int **vecinos;      
       vecinos = obtener_primeros_vecinos(fila, columna);
-      E += this->influencia_externa*this->condicion_externa*this->estado(fila,columna);
-      for (int vecino=0; vecino<4; vecino++) 
+#ifdef ESPINES
+      E += this->influencia_externa*this->condicion_externa*estado_;
+      for (int i=0; i<4; i++) 
       {
-        E += this->influencia_primeros_vecinos*this->estado(vecinos[vecino][0],vecinos[vecino][1])/2; //Divido por 2 porque se están repitiendo emparejamientos
+        T vecino_ = this->estado(vecinos[i][0], vecinos[i][1]);
+        E += this->influencia_primeros_vecinos*vecino_/2; //Divido por 2 porque se están repitiendo emparejamientos
       }
+#else 
+      if ( == this->condicion_externa)
+      {
+        E -= this->influencia_externa;
+      }
+      for (int i=0; i<4; i++) 
+      {
+        T vecino_ = this->estado(vecinos[i][0], vecinos[i][1]);
+        if (vecino_ == estado_) E -= this->influencia_primeros_vecinos;
+      }
+#endif //ESPINES
     }
   }
   return E;
