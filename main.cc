@@ -17,11 +17,9 @@ int main(int argc, char** argv){
 	posibles_estados[1] = 1.0/2;
 	modelo1.definir_posibles_estados(N_posibles_estados, posibles_estados);
 	modelo1.llenar();
-	cout<<"Estado inicial:\n";
-	modelo1.print();
+  cout<<modelo1.energia()<<"\n";
 	modelo1.cambiar_estado();
-	cout<<"Estado final:\n";
-	modelo1.print();
+  cout<<modelo1.energia()<<"\n";
 }
 
 

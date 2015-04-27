@@ -28,7 +28,7 @@ public:
   double energia();
   double entropia();
   void print(void);
-  int **obtener_vecinos(int fila, int columna);
+  int **obtener_primeros_vecinos(int fila, int columna);
 
 private:
   double temp;
@@ -155,14 +155,16 @@ double MODELO::energia()
   {
     for (int columna=0; columna<this->columnas; columna++)
     {
-      int **vecinos = new int[4][2];
-      vecinos = obtener_vecinos(fila, columna);
-      for (int vecino=0; vecino<4; vecino++)
+      int **vecinos;      
+      vecinos = obtener_primeros_vecinos(fila, columna);
+      E += this->influencia_externa*this->condicion_externa*this->estado(fila,columna);
+      for (int vecino=0; vecino<4; vecino++) 
       {
-        E += this->influencia_externa*this->condicion_externa + this->influencia_primeros_vecinos*this->estado(vecinos[vecino][0],vecinos[vecino][1]);
+        E += this->influencia_primeros_vecinos*this->estado(vecinos[vecino][0],vecinos[vecino][1])/2; //Divido por 2 porque se están repitiendo emparejamientos
       }
     }
   }
+  return E;
 }
 
 TEMPLATE
@@ -182,5 +184,72 @@ double MODELO::probabilidad(double E_inicial, double E_final, double influencia_
 TEMPLATE
 double MODELO::entropia()
 {
-
+  return NULL;
 }
+
+TEMPLATE
+int** MODELO::obtener_primeros_vecinos(int fila, int columna)
+{
+  int** vecinos = new int*[4];
+  for (int vecino=0; vecino<4; vecino++)
+  {
+    vecinos[vecino] = new int[2];
+  }
+  //Vecino de arriba.
+  vecinos[0][0] = (fila>0)? (fila-1):(this->filas-1);
+  vecinos[0][1] = columna;
+  //Vecino de la derecha.
+  vecinos[1][0] = fila;
+  vecinos[1][1] = (columna<(this->columnas-1))? (columna+1):0;
+  //Vecino de abajo.
+  vecinos[2][0] = (fila<(this->filas-1))? (fila+1):0;
+  vecinos[2][1] = columna;
+  //Vecino de la izquierda.
+  vecinos[3][0] = fila;
+  vecinos[3][1] = (columna>0)? (columna-1):(this->columnas-1);
+
+  return vecinos;
+}
+
+
+
+//getters y setters
+TEMPLATE
+void MODELO::set_temp(double new_temp)
+{
+  this->temp = new_temp;
+}
+
+TEMPLATE
+void MODELO::set_kb(double new_kb)
+{
+  this->kb = new_kb;
+}
+
+TEMPLATE
+void MODELO::set_influencia_externa(double new_influencia_externa)
+{
+  this->influencia_externa = new_influencia_externa;
+}
+
+TEMPLATE
+void MODELO::set_A_prob(double new_A)
+{
+  this->A_prob = new_A;
+}
+
+  double condicion_externa;
+  double influencia_primeros_vecinos;
+
+TEMPLATE
+void MODELO::set_condicion_externa(double new_condicion_externa)
+{
+  this->condicion_externa = new_condicion_externa;
+}
+
+TEMPLATE
+void MODELO::set_influencia_primeros_vecinos(double new_influencia_primeros_vecinos)
+{
+  this->influencia_primeros_vecinos = new_influencia_primeros_vecinos;
+}
+
