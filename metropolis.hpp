@@ -74,12 +74,11 @@ MODELO::modelo()
 
 
 TEMPLATE
-void MODELO::definir_posibles_estados(int N_posibles_estados_in, double *posibles_estados_in)
+void MODELO::definir_posibles_estados(int N_posibles_estados_in, T *posibles_estados_in)
 {
   this->posibles_estados = posibles_estados_in;
   this->N_posibles_estados = N_posibles_estados_in;
 }
-
 
 TEMPLATE
 void MODELO::llenar()
@@ -266,9 +265,6 @@ void MODELO::set_A_prob(double new_A)
 {
   this->A_prob = new_A;
 }
-
-  double condicion_externa;
-  double influencia_primeros_vecinos;
 
 TEMPLATE
 void MODELO::set_condicion_externa(double new_condicion_externa)
