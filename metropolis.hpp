@@ -50,6 +50,8 @@ public:
   void set_influencia_externa(double new_value);
   void set_condicion_externa(T new_value);
   void set_influencia_primeros_vecinos(double *new_value);
+  int* get_cantidad_estado();
+  void contar_estados();
 
 private:
   double temp;
@@ -63,6 +65,7 @@ private:
   double influencia_externa;
   T condicion_externa;
   double *influencia_primeros_vecinos;
+  int *cantidad_estado;
 };
 
 
@@ -92,6 +95,7 @@ void MODELO::definir_posibles_estados(int N_posibles_estados_in, T *posibles_est
 {
   this->posibles_estados = posibles_estados_in;
   this->N_posibles_estados = N_posibles_estados_in;
+  this->cantidad_estado = new int[N_posibles_estados_in];
 }
 
 TEMPLATE
@@ -271,6 +275,27 @@ int** MODELO::obtener_primeros_vecinos(int fila, int columna)
   return vecinos;
 }
 
+TEMPLATE
+void MODELO::contar_estados()
+{
+  for (int num_estado=0; num_estado<this->N_posibles_estados; num_estado++)
+  {
+    cantidad_estado[num_estado] = 0;  
+  }
+  for (int fila=0; fila<this->filas; fila++)
+  {
+    for (int columna=0; columna<this->columnas; columna++)
+    {
+      for (int num_estado=0; num_estado<this->N_posibles_estados; num_estado++)
+      {
+        T estado = this->estado(fila,columna);
+        if (estado == posibles_estados[num_estado]) cantidad_estado[num_estado]++;
+      }
+    
+    }
+  }
+}
+
 
 
 //getters y setters
@@ -312,3 +337,9 @@ void MODELO::set_influencia_primeros_vecinos(double *new_influencia_primeros_vec
   this->influencia_primeros_vecinos = new_influencia_primeros_vecinos;
 }
 
+
+TEMPLATE
+int* MODELO::get_cantidad_estado()
+{
+  return this->cantidad_estado;
+}
