@@ -7,13 +7,14 @@
 #include <stdlib.h>
 #include <time.h>
 #include <cmath>
+#include <string>
+using namespace std;
 
 #define DEBUG
 //#define ESPINES
 
 
-
-template< size_t M, size_t N, typename T = float>
+template< size_t M, size_t N, typename T = string>
 class modelo
 {
 public:
@@ -28,13 +29,13 @@ public:
   double probabilidad(double E_inicial, double E_final);
   double energia();
   double entropia();
-  void print(void);
+  string to_string();
   int **obtener_primeros_vecinos(int fila, int columna);
   void set_temp(double new_value);
   void set_kb(double new_value);
   void set_A_prob(double new_value);
   void set_influencia_externa(double new_value);
-  void set_condicion_externa(double new_value);
+  void set_condicion_externa(T new_value);
   void set_influencia_primeros_vecinos(double new_value);
 
 private:
@@ -47,7 +48,7 @@ private:
   int N_posibles_estados;
   T *posibles_estados;
   double influencia_externa;
-  double condicion_externa;
+  T condicion_externa;
   double influencia_primeros_vecinos;
 };
 
@@ -146,16 +147,18 @@ void MODELO::cambiar_estado()
 }
 
 TEMPLATE
-void MODELO::print()
+string MODELO::to_string()
 {
+  string output="";
   for (int fila=0; fila<this->filas; fila++)
   {
     for (int columna=0; columna<this->columnas; columna++)
     {
-      cout<<this->estado(fila,columna)<<"\t";
+      output += this->estado(fila,columna)+"\t";
     }
-    cout<<"\n";
+    output+="\n";
   }
+  return output;
 }
 
 TEMPLATE
@@ -212,7 +215,7 @@ double MODELO::probabilidad(double E_inicial, double E_final)
 TEMPLATE
 double MODELO::entropia()
 {
-  return NULL;
+  return 0;
 }
 
 TEMPLATE
@@ -267,7 +270,7 @@ void MODELO::set_A_prob(double new_A)
 }
 
 TEMPLATE
-void MODELO::set_condicion_externa(double new_condicion_externa)
+void MODELO::set_condicion_externa(T new_condicion_externa)
 {
   this->condicion_externa = new_condicion_externa;
 }
