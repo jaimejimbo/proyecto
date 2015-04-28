@@ -49,7 +49,7 @@ public:
   void set_A_prob(double new_value);
   void set_influencia_externa(double new_value);
   void set_condicion_externa(T new_value);
-  void set_influencia_primeros_vecinos(double new_value);
+  void set_influencia_primeros_vecinos(double *new_value);
 
 private:
   double temp;
@@ -62,7 +62,7 @@ private:
   T *posibles_estados;
   double influencia_externa;
   T condicion_externa;
-  double influencia_primeros_vecinos;
+  double *influencia_primeros_vecinos;
 };
 
 
@@ -162,18 +162,24 @@ MODELO::operator()( size_t row_index, size_t col_index ) const
 TEMPLATE
 void MODELO::cambiar_estado()
 {
-  srand(time(NULL));
+  /*srand(time(NULL));
   srand(rand());
   int fila = (int)(rand()%(this->filas));
-  int columna = (int)(rand()%(this->columnas));
-  int indice_estado = (int)(rand()%(this->N_posibles_estados));
-  T valor_anterior = estado(fila,columna);
-  double E_inicial = this->energia();
-  T nuevo_estado = this->posibles_estados[indice_estado];
-  this->estado(fila,columna) = nuevo_estado;
-  double E_final = this->energia();
-  double prob = this->probabilidad(E_inicial, E_final);
-  if ((rand()*1.0/RAND_MAX) >= prob) {this->estado(fila,columna) = valor_anterior;}
+  int columna = (int)(rand()%(this->columnas));*/
+  for (int fila=0; fila < this->filas; fila++)
+  {
+     for (int columna=0; columna < this->columnas; columna++)
+     {   
+        int indice_estado = (int)(rand()%(this->N_posibles_estados));
+        T valor_anterior = estado(fila,columna);
+        double E_inicial = this->energia();
+        T nuevo_estado = this->posibles_estados[indice_estado];
+        this->estado(fila,columna) = nuevo_estado;
+        double E_final = this->energia();
+        double prob = this->probabilidad(E_inicial, E_final);
+        if ((rand()*1.0/RAND_MAX) >= prob) {this->estado(fila,columna) = valor_anterior;}
+    }
+  }
 }
 
 TEMPLATE
@@ -200,6 +206,11 @@ double MODELO::energia()
     for (int columna=0; columna<this->columnas; columna++)
     {
       T estado_ = this->estado(fila,columna);
+      int indice;
+      for (int i=0; i<this->N_posibles_estados; i++){
+        if (this->posibles_estados[i] == estado_) indice=i;
+      }
+      double influencia_vecino = this->influencia_primeros_vecinos[indice];
       int **vecinos;      
       vecinos = obtener_primeros_vecinos(fila, columna);
       if (estado_ == this->condicion_externa)
@@ -209,7 +220,7 @@ double MODELO::energia()
       for (int i=0; i<4; i++) 
       {
         T vecino_ = this->estado(vecinos[i][0], vecinos[i][1]);
-        if (vecino_ == estado_) E -= this->influencia_primeros_vecinos;
+        if (vecino_ == estado_) E -= influencia_vecino;
       }
     }
   }
@@ -296,7 +307,7 @@ void MODELO::set_condicion_externa(T new_condicion_externa)
 }
 
 TEMPLATE
-void MODELO::set_influencia_primeros_vecinos(double new_influencia_primeros_vecinos)
+void MODELO::set_influencia_primeros_vecinos(double *new_influencia_primeros_vecinos)
 {
   this->influencia_primeros_vecinos = new_influencia_primeros_vecinos;
 }
