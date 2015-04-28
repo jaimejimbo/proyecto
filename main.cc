@@ -15,10 +15,18 @@ int main(int argc, char** argv){
   posibles_estados[0] = "omnivoro";
   posibles_estados[1] = "carnivoro";
   posibles_estados[2] = "vegetariano";
-  double *influencia_vecinos = new double[3];
-  influencia_vecinos[0] = 10;
-  influencia_vecinos[1] = 0;
-  influencia_vecinos[2] = 20;
+  double **influencia_vecinos = new double*[3];
+  for (int i=0; i<3; i++)
+  {
+    influencia_vecinos[i] = new double[3];
+    for (int j=0; j<3; j++)
+    {
+      influencia_vecinos[i][j] = 0;
+    }
+  }
+  influencia_vecinos[0][0] = 10;
+  influencia_vecinos[1][1] = 0;
+  influencia_vecinos[2][2] = 20;
   modelo<8,8,string> modelo1;
   modelo1.definir_posibles_estados(N_posibles_estados, posibles_estados);
   modelo1.llenar();
