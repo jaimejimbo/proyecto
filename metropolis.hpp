@@ -9,7 +9,7 @@
 #include <cmath>
 
 #define DEBUG
-#define ESPINES
+//#define ESPINES
 
 
 
@@ -18,7 +18,7 @@ class modelo
 {
 public:
   modelo();
-  void definir_posibles_estados(int N_posibles_estados, double *posibles_estados);
+  void definir_posibles_estados(int N_posibles_estados, T *posibles_estados);
   void llenar();
   inline T& operator()( size_t row_index, size_t col_index );
   inline const T& operator()( size_t row_index, size_t col_index ) const;
@@ -45,7 +45,7 @@ private:
   int filas;
   int columnas;
   int N_posibles_estados;
-  double *posibles_estados;
+  T *posibles_estados;
   double influencia_externa;
   double condicion_externa;
   double influencia_primeros_vecinos;
