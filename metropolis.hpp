@@ -1,5 +1,6 @@
 /*
- *
+ *  - Clase principal de la simulación. En ella se definen los estados y métodos 
+ * principales.
  *
  */
 
@@ -10,7 +11,19 @@
 #include <string>
 using namespace std;
 
-#define DEBUG
+#define NDEBUG
+#ifndef NDEBUG
+#   define ASSERT(condition, message) \
+    do { \
+        if (! (condition)) { \
+            std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
+                      << " line " << __LINE__ << ": " << message << std::endl; \
+            std::exit(EXIT_FAILURE); \
+        } \
+    } while (false)
+#else
+#   define ASSERT(condition, message) do { } while (false)
+#endif
 //#define ESPINES
 
 
@@ -103,6 +116,10 @@ TEMPLATE
 inline T&
 MODELO::at( size_t row_index, size_t col_index )
 {
+    ASSERT(0<=row_index,"");
+    ASSERT(row_index<this->filas,"");
+    ASSERT(0<=col_index,"");
+    ASSERT(col_index<this->columnas,"");
     return this->estado(row_index, col_index);
 }
 
@@ -111,6 +128,10 @@ TEMPLATE
 const inline T&
 MODELO::at( size_t row_index, size_t col_index ) const
 {
+    ASSERT(0<=row_index,"");
+    ASSERT(row_index<this->filas,"");
+    ASSERT(0<=col_index,"");
+    ASSERT(col_index<this->columnas,"");
     return this->estado(row_index, col_index);
 }
 
@@ -118,6 +139,10 @@ TEMPLATE
 inline T&
 MODELO::operator()( size_t row_index, size_t col_index )
 {
+    ASSERT(0<=row_index,"");
+    ASSERT(row_index<this->filas,"");
+    ASSERT(0<=col_index,"");
+    ASSERT(col_index<this->columnas,"");
     return this->estado(row_index, col_index);
 }
 
@@ -126,6 +151,10 @@ TEMPLATE
 const inline T&
 MODELO::operator()( size_t row_index, size_t col_index ) const
 {
+    ASSERT(0<=row_index,"");
+    ASSERT(row_index<this->filas,"");
+    ASSERT(0<=col_index,"");
+    ASSERT(col_index<this->columnas,"");
     return this->estado(row_index, col_index);
 }
 
@@ -140,10 +169,11 @@ void MODELO::cambiar_estado()
   int indice_estado = (int)(rand()%(this->N_posibles_estados));
   T valor_anterior = estado(fila,columna);
   double E_inicial = this->energia();
-  this->estado(fila,columna) = this->posibles_estados[indice_estado];
+  T nuevo_estado = this->posibles_estados[indice_estado];
+  this->estado(fila,columna) = nuevo_estado;
   double E_final = this->energia();
   double prob = this->probabilidad(E_inicial, E_final);
-  if ((rand()*1.0/RAND_MAX) >= prob) this->estado(fila,columna) = valor_anterior;
+  if ((rand()*1.0/RAND_MAX) >= prob) {this->estado(fila,columna) = valor_anterior;}
 }
 
 TEMPLATE
@@ -154,7 +184,7 @@ string MODELO::to_string()
   {
     for (int columna=0; columna<this->columnas; columna++)
     {
-      output += this->estado(fila,columna)+"\t";
+      output += (string)this->estado(fila,columna)+"\t";
     }
     output+="\n";
   }
@@ -172,14 +202,6 @@ double MODELO::energia()
       T estado_ = this->estado(fila,columna);
       int **vecinos;      
       vecinos = obtener_primeros_vecinos(fila, columna);
-#ifdef ESPINES
-      E += this->influencia_externa*this->condicion_externa*estado_;
-      for (int i=0; i<4; i++) 
-      {
-        T vecino_ = this->estado(vecinos[i][0], vecinos[i][1]);
-        E += this->influencia_primeros_vecinos*vecino_/2; //Divido por 2 porque se están repitiendo emparejamientos
-      }
-#else 
       if (estado_ == this->condicion_externa)
       {
         E -= this->influencia_externa;
@@ -189,7 +211,6 @@ double MODELO::energia()
         T vecino_ = this->estado(vecinos[i][0], vecinos[i][1]);
         if (vecino_ == estado_) E -= this->influencia_primeros_vecinos;
       }
-#endif //ESPINES
     }
   }
   return E;
@@ -198,18 +219,15 @@ double MODELO::energia()
 TEMPLATE
 double MODELO::probabilidad(double E_inicial, double E_final)
 {
-  double prob=-1.0;
-  if (E_inicial>E_final) prob=this->A_prob;
+  double prob;
+  if (E_inicial>=E_final) prob=this->A_prob;
   else{
-    if (this->temp != 0 && this->kb != 0) prob=this->A_prob*exp(abs(E_inicial-E_final)/this->temp*this->kb);
-    else prob=0;
+    if (this->temp != 0 && this->kb != 0) prob=this->A_prob*exp(-abs(E_inicial-E_final)/(this->temp*this->kb));
+    else prob=0.0;
   }
-#ifdef DEBUG
-  if (prob>=0 and prob<=1) return prob;
-  else cerr<<"Algo falla al calcular la probabilidad";
-#else
+  ASSERT(0<=prob,"Fallo al calcular la probabilidad <0");
+  ASSERT(prob<=1,"Fallo al calcular la probabilidad >1");
   return prob;
-#endif //DEBUG
 }
 
 TEMPLATE
@@ -266,6 +284,8 @@ void MODELO::set_influencia_externa(double new_influencia_externa)
 TEMPLATE
 void MODELO::set_A_prob(double new_A)
 {
+  ASSERT(0<=new_A,"El parámetro A tiene que estar entre 0 y 1");
+  ASSERT(new_A<=1,"El parámetro A tiene que estar entre 0 y 1");
   this->A_prob = new_A;
 }
 
