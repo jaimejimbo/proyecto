@@ -10,6 +10,7 @@
 #include <cmath>
 #include <string>
 using namespace std;
+#include <fstream>
 
 #define NDEBUG
 #ifndef NDEBUG
@@ -49,7 +50,7 @@ public:
   void set_A_prob(double new_value);
   void set_influencia_externa(double new_value);
   void set_condicion_externa(T new_value);
-  void set_influencia_primeros_vecinos(double *new_value);
+  void set_influencia_primeros_vecinos(double **new_value);
   int* get_cantidad_estado();
   void contar_estados();
 
@@ -64,7 +65,7 @@ private:
   T *posibles_estados;
   double influencia_externa;
   T condicion_externa;
-  double *influencia_primeros_vecinos;
+  double **influencia_primeros_vecinos;
   int *cantidad_estado;
 };
 
@@ -210,11 +211,10 @@ double MODELO::energia()
     for (int columna=0; columna<this->columnas; columna++)
     {
       T estado_ = this->estado(fila,columna);
-      int indice;
+      int indice, indice_v;
       for (int i=0; i<this->N_posibles_estados; i++){
         if (this->posibles_estados[i] == estado_) indice=i;
       }
-      double influencia_vecino = this->influencia_primeros_vecinos[indice];
       int **vecinos;      
       vecinos = obtener_primeros_vecinos(fila, columna);
       if (estado_ == this->condicion_externa)
@@ -224,7 +224,10 @@ double MODELO::energia()
       for (int i=0; i<4; i++) 
       {
         T vecino_ = this->estado(vecinos[i][0], vecinos[i][1]);
-        if (vecino_ == estado_) E -= influencia_vecino;
+	for (int j=0; j<this->N_posibles_estados; j++){
+	  if (this->posibles_estados[j] == vecino_) indice_v=j;
+	}
+        if (vecino_ == estado_) E -= this->influencia_primeros_vecinos[indice][indice_v];
       }
     }
   }
@@ -332,7 +335,7 @@ void MODELO::set_condicion_externa(T new_condicion_externa)
 }
 
 TEMPLATE
-void MODELO::set_influencia_primeros_vecinos(double *new_influencia_primeros_vecinos)
+void MODELO::set_influencia_primeros_vecinos(double **new_influencia_primeros_vecinos)
 {
   this->influencia_primeros_vecinos = new_influencia_primeros_vecinos;
 }
