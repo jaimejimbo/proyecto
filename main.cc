@@ -9,10 +9,11 @@ using namespace std;
 #include "metropolis.hpp"
 
 void set_ceros(double **matriz, int filas, int columnas);
+void antisimetriza(double **matriz, int filas, int columnas);
 
 int main(int argc, char** argv){
   //parametros
-  const int N_posibles_estados = 2;
+  const int N_posibles_estados = 3;
   string posibles_estados[N_posibles_estados];
   double **influencia_vecinos = new double*[N_posibles_estados];
   for (int i=0; i<N_posibles_estados; i++)
@@ -28,19 +29,23 @@ int main(int argc, char** argv){
   modelo<size_y,size_x,string> modelo1;
   posibles_estados[0] = "egoista";
   posibles_estados[1] = "altruista";
+  posibles_estados[2] = "precavido";
   modelo1.definir_posibles_estados(N_posibles_estados, posibles_estados);
   modelo1.llenar();
   modelo1.set_temp(0);
   modelo1.set_kb(0);
   modelo1.set_A_prob(1);
-  modelo1.set_influencia_externa(0);
-  modelo1.set_condicion_externa("egoista");
-  influencia_vecinos[0][0] = -10;
-  influencia_vecinos[1][1] = 5;
-  influencia_vecinos[0][1] = 20;
-  influencia_vecinos[1][0] = -20;
-  const int longitud_paso=1;
-  const int numero_pasos=50;
+  modelo1.set_influencia_externa(30);
+  modelo1.set_condicion_externa("precavido");
+  influencia_vecinos[0][0] = 0;
+  influencia_vecinos[1][1] = 0;
+  influencia_vecinos[0][1] = 0;
+  influencia_vecinos[0][2] = -10;
+  influencia_vecinos[1][2] = -10;
+  influencia_vecinos[2][2] = 0;
+  antisimetriza(influencia_vecinos,N_posibles_estados,N_posibles_estados);
+  const int longitud_paso=10;
+  const int numero_pasos=250;
   modelo1.set_influencia_primeros_vecinos(influencia_vecinos);
 
 
@@ -103,6 +108,18 @@ void set_ceros(double **matriz, int filas, int columnas)
     for (int columna=0; columna<columnas; columna++)
     {
       matriz[fila][columna] = 0;
+    }
+  }
+}
+
+void antisimetriza(double **matriz, int filas, int columnas)
+{
+	if (filas!=columnas) {std::cerr<<"La matriz tiene que ser cuadrada (antisimetrizacion).\n";std::exit(EXIT_FAILURE);}
+  for (int fila=0; fila<filas; fila++)
+  {
+    for (int columna=fila+1; columna<columnas; columna++)
+    {
+      matriz[fila][columnas-columna] = -matriz[fila][columna];
     }
   }
 }
