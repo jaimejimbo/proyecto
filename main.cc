@@ -35,8 +35,8 @@ int main(int argc, char** argv){
 
 
   //parámetros
-  modelo1.set_temp(10);
-  modelo1.set_kb(10);
+  modelo1.set_temp(0);
+  modelo1.set_kb(0);
   modelo1.set_A_prob(1);
   modelo1.set_influencia_externa(10);
   modelo1.set_condicion_externa("omnivoro");

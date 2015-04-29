@@ -227,7 +227,7 @@ double MODELO::energia()
 	for (int j=0; j<this->N_posibles_estados; j++){
 	  if (this->posibles_estados[j] == vecino_) indice_v=j;
 	}
-        if (vecino_ == estado_) E -= this->influencia_primeros_vecinos[indice][indice_v];
+        E -= this->influencia_primeros_vecinos[indice][indice_v];
       }
     }
   }
