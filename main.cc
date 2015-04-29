@@ -35,13 +35,13 @@ int main(int argc, char** argv){
   modelo1.set_temp(0);
   modelo1.set_kb(0);
   modelo1.set_A_prob(1);
-  modelo1.set_influencia_externa(30);
+  modelo1.set_influencia_externa(0);
   modelo1.set_condicion_externa("precavido");
-  influencia_vecinos[0][0] = 0;
-  influencia_vecinos[1][1] = 0;
-  influencia_vecinos[0][1] = 0;
-  influencia_vecinos[0][2] = -10;
-  influencia_vecinos[1][2] = -10;
+  influencia_vecinos[0][0] = -10;
+  influencia_vecinos[1][1] = 5;
+  influencia_vecinos[0][1] = 20;
+  influencia_vecinos[0][2] = 0;
+  influencia_vecinos[1][2] = 20;
   influencia_vecinos[2][2] = 0;
   antisimetriza(influencia_vecinos,N_posibles_estados,N_posibles_estados);
   const int longitud_paso=10;
@@ -60,7 +60,7 @@ int main(int argc, char** argv){
   proporciones_t.open("proporciones_t.txt");
   graphs.open("graphs.plot");
 
-	graphs<<"set terminal png size 640,300\nset output \"energia.png\"\nplot \"energia_t.txt\" with lines\nset output \"proporciones.png\"\n plot ";
+	graphs<<"set terminal png size 640,300\nset output \"energia.png\"\nset yrange [0:100]\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones.png\"\nset grid\n plot ";
 
   energia_t<<"#paso\tenergia\n";
   entropia_t<<"#paso\tentropia\n";
@@ -68,7 +68,7 @@ int main(int argc, char** argv){
   for (int estado=0; estado<N_posibles_estados; estado++)
   {
     graphs<<"\"proporciones_t.txt\" using 1:"<<estado+2<<" title \""<<posibles_estados[estado]<<"\" with lines";
-    if (estado<N_posibles_estados) graphs<<", ";
+    if (estado<N_posibles_estados-1) graphs<<", ";
     proporciones_t<<posibles_estados[estado]<<"\t";
   }
   proporciones_t<<"\n";
@@ -86,7 +86,7 @@ int main(int argc, char** argv){
           	proporciones_t<<i<<"\t";
 		for (int j=0; j<N_posibles_estados; j++)
 		{
-			proporciones_t<<num_estados[j]<<"\t";
+			proporciones_t<<num_estados[j]*100.0/(size_x*size_y)<<"\t";
 		}
 		proporciones_t<<"\n";
 		energia_t<<i<<"\t"<<modelo1.energia()<<"\n";
