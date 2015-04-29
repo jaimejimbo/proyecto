@@ -1,0 +1,13 @@
+altruismo-egoismo:
+  egoista-egoista = -10;
+  altruista-altruista = 5;
+  egoista-altruista = 20;
+  altruista-egoista = -20;
+
+altruismo-egoismo-precavido: (antisimetria)
+  egoista-egoista = -10;
+  altruista-altruista = 5;
+  precavido-precavido = 0
+  egoista-altruista = 20;
+  egoista-precavido = 0
+  altruista-precavido = 20
