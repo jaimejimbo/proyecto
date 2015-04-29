@@ -10,6 +10,7 @@
 #include <cmath>
 #include <string>
 using namespace std;
+#include <fstream>
 
 #define NDEBUG
 #ifndef NDEBUG
