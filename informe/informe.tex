@@ -12,6 +12,29 @@
 
 \section*{Introducci\'on}
 
+En este proyecto he aplicado m\'etodos de la f\'isica estad\'istica a otros temas. Concretamente he usado el algoritmo de Metr\'opolis, basado en el m\'etodo de Montecarlo. Voy a introducir ambos m\'etodos, pero para mejor entendimiento es preferible consultar bibliograf\'ia especializada en el tema.
 
+\subsection*{Montecarlo}
+
+En el m\'etodo de Montecarlo se tiene inicialmente un sistema en cierto estado. Aleatoriamente se cambia el estado de uno de los elementos que conforman al sistema. A este cambio se le asocia una puntuaci\'on. Si la puntuaci\'on es positiva o una determinada, se cambia definitivamente el sistema. Si no, se vuelve al estado anterior. 
+
+Si se quisiera hacer una inteligencia virtual que jugara al tres en raya, el ordenador ir\'ia comprobando cada posible jugada y asign\'andole una puntuaci\'on, en funci\'on de la probabilidad que tenga esa jugada de ganar la partida. Luego escogera la que tenga m\'as puntuaci\'on. La desventaja de este m\'etodo es que tarda mucho tiempo en comprobar todos los posibles estados, lo que se puede paliar limitando el numero de estados que prev\'e. 
+
+En este caso, el programa comprueba solo el siguiente estado, por lo que no se da el error mencionado.
+
+\subsection*{Metr\'opolis}
+
+La principal diferencia es que con este m\'etodo se permite al sistema ir a un estado con menor puntuaci\'on siguiendo una ley de probabilidad exponencial. Esto hace que el sistema tarde mucho m\'as en alcanzar su estado estable.
+
+Para este trabajo se ha usado el algoritmo de Metr\'opolis.
+
+
+
+\newpage
+\newpage
+\section*{Bibliograf\'ia}
+\begin{itemize}
+\item["El gen egoista" de Richard Dawkins]
+\end{itemize}
 
 \end{document}
