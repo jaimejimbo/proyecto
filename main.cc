@@ -23,13 +23,13 @@ int main(int argc, char** argv){
       influencia_vecinos[i][j] = 0;
     }
   }
-  const int size_x = 100;
-  const int size_y = 100;
+  const int size_x = 10;
+  const int size_y = 10;
   modelo<size_y,size_x,string> modelo1;
-  modelo1.definir_posibles_estados(N_posibles_estados, posibles_estados);
-  modelo1.llenar();
   posibles_estados[0] = "egoista";
   posibles_estados[1] = "altruista";
+  modelo1.definir_posibles_estados(N_posibles_estados, posibles_estados);
+  modelo1.llenar();
   modelo1.set_temp(0);
   modelo1.set_kb(0);
   modelo1.set_A_prob(1);
@@ -40,7 +40,7 @@ int main(int argc, char** argv){
   influencia_vecinos[0][1] = 20;
   influencia_vecinos[1][0] = -20;
   const int longitud_paso=1;
-  const int numero_pasos=100;
+  const int numero_pasos=50;
   modelo1.set_influencia_primeros_vecinos(influencia_vecinos);
 
 

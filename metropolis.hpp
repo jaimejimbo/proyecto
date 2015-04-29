@@ -12,7 +12,7 @@
 using namespace std;
 #include <fstream>
 
-#define NDEBUG
+//#define NDEBUG
 #ifndef NDEBUG
 #   define ASSERT(condition, message) \
     do { \
@@ -205,13 +205,17 @@ string MODELO::to_string()
 TEMPLATE
 double MODELO::energia()
 {
+  int indice, indice_v, fila, columna;
   double E=0;
-  for (int fila=0; fila<this->filas; fila++)
+  for (int fila_=0; fila_<this->filas; fila_++)
   {
-    for (int columna=0; columna<this->columnas; columna++)
+    for (int columna_=0; columna_<this->columnas; columna_++)
     {
+      indice = -1;
+      indice_v = -1;
+      fila = rand()%this->filas;
+      columna = rand()%this->columnas;
       T estado_ = this->estado(fila,columna);
-      int indice, indice_v;
       for (int i=0; i<this->N_posibles_estados; i++){
         if (this->posibles_estados[i] == estado_) indice=i;
       }
@@ -227,6 +231,13 @@ double MODELO::energia()
 	for (int j=0; j<this->N_posibles_estados; j++){
 	  if (this->posibles_estados[j] == vecino_) indice_v=j;
 	}
+	//cout<<indice<<"\t"<<indice_v<<"\n";
+	//cout<<this->to_string();
+	ASSERT(indice>=0,"indice < 0");
+	ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
+	ASSERT(indice_v>=0,"indice_v < 0");
+	ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
+
         E -= this->influencia_primeros_vecinos[indice][indice_v];
       }
     }
