@@ -167,14 +167,16 @@ MODELO::operator()( size_t row_index, size_t col_index ) const
 TEMPLATE
 void MODELO::cambiar_estado()
 {
-  /*srand(time(NULL));
+  srand(time(NULL));
   srand(rand());
-  int fila = (int)(rand()%(this->filas));
-  int columna = (int)(rand()%(this->columnas));*/
-  for (int fila=0; fila < this->filas; fila++)
+  int fila;
+  int columna;
+  for (int fila_=0; fila_ < this->filas; fila_++)
   {
-     for (int columna=0; columna < this->columnas; columna++)
+     for (int columna_=0; columna_ < this->columnas; columna_++)
      {   
+	fila = (int)(rand()%(this->filas));
+	columna = (int)(rand()%(this->columnas));
         int indice_estado = (int)(rand()%(this->N_posibles_estados));
         T valor_anterior = estado(fila,columna);
         double E_inicial = this->energia();
@@ -207,14 +209,12 @@ double MODELO::energia()
 {
   int indice, indice_v, fila, columna;
   double E=0;
-  for (int fila_=0; fila_<this->filas; fila_++)
+  for (int fila=0; fila<this->filas; fila++)
   {
-    for (int columna_=0; columna_<this->columnas; columna_++)
+    for (int columna=0; columna<this->columnas; columna++)
     {
       indice = -1;
       indice_v = -1;
-      fila = rand()%this->filas;
-      columna = rand()%this->columnas;
       T estado_ = this->estado(fila,columna);
       for (int i=0; i<this->N_posibles_estados; i++){
         if (this->posibles_estados[i] == estado_) indice=i;
