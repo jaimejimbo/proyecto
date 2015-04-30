@@ -25,8 +25,8 @@ int main(int argc, char** argv){
 	influencia_externa;
   string condicion_externa;
 
-  const int N_temp = 10000;
-  const   int delta_temp = 0.01;
+  const int N_temp = 1000;
+  const   int delta_temp = 0;
 
   //parametros
   const int N_posibles_estados = 2;
