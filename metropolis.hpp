@@ -12,7 +12,7 @@
 using namespace std;
 #include <fstream>
 
-//#define NDEBUG
+#define NDEBUG
 #ifndef NDEBUG
 #   define ASSERT(condition, message) \
     do { \
@@ -262,6 +262,8 @@ double MODELO::probabilidad(double E_inicial, double E_final)
   }
   ASSERT(0<=prob,"Fallo al calcular la probabilidad <0");
   ASSERT(prob<=1,"Fallo al calcular la probabilidad >1");
+  if (prob>1) prob=1;
+  if (prob<0) prob=0;
   return prob;
 }
 
