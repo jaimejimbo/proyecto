@@ -33,7 +33,7 @@ int main(int argc, char** argv){
   modelo1.definir_posibles_estados(N_posibles_estados, posibles_estados);
   modelo1.llenar();
   modelo1.set_temp(0);
-  modelo1.set_kb(0);
+  modelo1.set_kb(1);
   modelo1.set_A_prob(1);
   modelo1.set_influencia_externa(0);
   modelo1.set_condicion_externa("precavido");
@@ -60,7 +60,7 @@ int main(int argc, char** argv){
   proporciones_t.open("proporciones_t.txt");
   graphs.open("graphs.plot");
 
-	graphs<<"set terminal png size 640,300\nset output \"energia.png\"\nset yrange [0:100]\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones.png\"\nset grid\n plot ";
+	graphs<<"set terminal png size 640,300\nset output \"energia-"<<modelo1.get_temp()<<"-"<<modelo1.get_kb()<<"-"<<modelo1.get_A_prob()<<"-"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones-"<<modelo1.get_temp()<<"-"<<modelo1.get_kb()<<"-"<<modelo1.get_A_prob()<<"-"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset yrange [0:100]\nset grid\n plot ";
 
   energia_t<<"#paso\tenergia\n";
   entropia_t<<"#paso\tentropia\n";
