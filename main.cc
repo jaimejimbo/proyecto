@@ -12,9 +12,8 @@ void set_ceros(double **matriz, int filas, int columnas);
 void antisimetriza(double **matriz, int filas, int columnas);
 
 int main(int argc, char** argv){
-
-  if (argc==1) temp=0;
-  if (argc==2) temp=(double)atof(argv[2]);
+  double temp=0;
+  if (argc==2) temp=(double)atof(argv[1]);
   //parametros
   const int N_posibles_estados = 3;
   string posibles_estados[N_posibles_estados];

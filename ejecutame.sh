@@ -1,5 +1,9 @@
 #!/bin/bash
 
 make
-./proyecto
+./proyecto 0
+gnuplot graphs.plot
+./proyecto 10
+gnuplot graphs.plot
+./proyecto 100
 gnuplot graphs.plot
