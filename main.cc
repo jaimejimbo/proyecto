@@ -46,6 +46,7 @@ int main(int argc, char** argv){
   influencia_vecinos[1][2] = 20;
   influencia_vecinos[2][2] = 0;
   antisimetriza(influencia_vecinos,N_posibles_estados,N_posibles_estados);
+  influencia_vecinos[2][1] = 20;
   const int longitud_paso=10;
   const int numero_pasos=250;
   modelo1.set_influencia_primeros_vecinos(influencia_vecinos);

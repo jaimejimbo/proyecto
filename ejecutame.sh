@@ -7,3 +7,7 @@ gnuplot graphs.plot
 gnuplot graphs.plot
 ./proyecto 100
 gnuplot graphs.plot
+./proyecto 1000
+gnuplot graphs.plot
+./proyecto 10000
+gnuplot graphs.plot
