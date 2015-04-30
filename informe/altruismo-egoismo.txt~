@@ -1,0 +1,5 @@
+
+  egoista-egoista = -10;
+  altruista-altruista = 5;
+  egoista-altruista = 20;
+  altruista-egoista = -20;

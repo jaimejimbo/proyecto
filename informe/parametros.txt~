@@ -1,0 +1,7 @@
+
+  influencia_vecinos[0][0] = -10;
+  influencia_vecinos[1][1] = 5;
+  influencia_vecinos[0][1] = 20;
+  influencia_vecinos[0][2] = 0;
+  influencia_vecinos[1][2] = 20;
+  influencia_vecinos[2][2] = 0;
