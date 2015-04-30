@@ -12,6 +12,9 @@ void set_ceros(double **matriz, int filas, int columnas);
 void antisimetriza(double **matriz, int filas, int columnas);
 
 int main(int argc, char** argv){
+
+  if (argc==1) temp=0;
+  if (argc==2) temp=(double)atof(argv[2]);
   //parametros
   const int N_posibles_estados = 3;
   string posibles_estados[N_posibles_estados];
@@ -24,15 +27,15 @@ int main(int argc, char** argv){
       influencia_vecinos[i][j] = 0;
     }
   }
-  const int size_x = 10;
-  const int size_y = 10;
+  const int size_x = 100;
+  const int size_y = 100;
   modelo<size_y,size_x,string> modelo1;
   posibles_estados[0] = "egoista";
   posibles_estados[1] = "altruista";
   posibles_estados[2] = "precavido";
   modelo1.definir_posibles_estados(N_posibles_estados, posibles_estados);
   modelo1.llenar();
-  modelo1.set_temp(0);
+  modelo1.set_temp(temp);
   modelo1.set_kb(1);
   modelo1.set_A_prob(1);
   modelo1.set_influencia_externa(0);
@@ -60,7 +63,7 @@ int main(int argc, char** argv){
   proporciones_t.open("proporciones_t.txt");
   graphs.open("graphs.plot");
 
-	graphs<<"set terminal png size 640,300\nset output \"energia-"<<modelo1.get_temp()<<"-"<<modelo1.get_kb()<<"-"<<modelo1.get_A_prob()<<"-"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones-"<<modelo1.get_temp()<<"-"<<modelo1.get_kb()<<"-"<<modelo1.get_A_prob()<<"-"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset yrange [0:100]\nset grid\n plot ";
+	graphs<<"set terminal png size 640,300\nset output \"energia-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset yrange [0:100]\nset grid\n plot ";
 
   energia_t<<"#paso\tenergia\n";
   entropia_t<<"#paso\tentropia\n";
@@ -114,7 +117,7 @@ void set_ceros(double **matriz, int filas, int columnas)
 
 void antisimetriza(double **matriz, int filas, int columnas)
 {
-	if (filas!=columnas) {std::cerr<<"La matriz tiene que ser cuadrada (antisimetrizacion).\n";std::exit(EXIT_FAILURE);}
+  if (filas!=columnas) {std::cerr<<"La matriz tiene que ser cuadrada (antisimetrizacion).\n";}
   for (int fila=0; fila<filas; fila++)
   {
     for (int columna=fila+1; columna<columnas; columna++)

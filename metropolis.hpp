@@ -4,15 +4,14 @@
  *
  */
 
-#include "vmmlib/vmmlib.hpp"
-#include <stdlib.h>
+#include <cstdlib>
 #include <time.h>
 #include <cmath>
 #include <string>
-using namespace std;
 #include <fstream>
+#include <iostream>
 
-//#define NDEBUG
+#define NDEBUG
 #ifndef NDEBUG
 #   define ASSERT(condition, message) \
     do { \
@@ -64,7 +63,7 @@ private:
   double temp;
   double kb;
   double A_prob;
-  vmml::matrix<M,N,T> estado;
+  T **estado;
   int filas;
   int columnas;
   int N_posibles_estados;
@@ -94,6 +93,11 @@ MODELO::modelo()
 {
   this->filas = (int)M;
   this->columnas = (int)N;
+  estado = new T*[this->filas];
+  for (int fila=0; fila<this->filas; fila++)
+  {
+    estado[fila] = new T[this->columnas];
+  }
 }
 
 
@@ -116,7 +120,7 @@ void MODELO::llenar()
     for (int columna=0; columna < this->columnas; columna++)
     {
       random_num = rand()%(this->N_posibles_estados);
-      this->estado(fila, columna) = this->posibles_estados[random_num];
+      this->estado[fila][columna] = this->posibles_estados[random_num];
     }
   }
 }
@@ -177,20 +181,76 @@ void MODELO::cambiar_estado()
   srand(rand());
   int fila;
   int columna;
+  double E_inicial = 0,
+         E_final=0;
+  int indice,
+      indice_v;
   for (int fila_=0; fila_ < this->filas; fila_++)
   {
      for (int columna_=0; columna_ < this->columnas; columna_++)
-     {   
-	fila = (int)(rand()%(this->filas));
-	columna = (int)(rand()%(this->columnas));
+     {
+        E_inicial=0;
+        E_final=0;
+	      fila = (int)(rand()%(this->filas));
+	      columna = (int)(rand()%(this->columnas));
         int indice_estado = (int)(rand()%(this->N_posibles_estados));
-        T valor_anterior = estado(fila,columna);
-        double E_inicial = this->energia();
+        T valor_anterior = estado[fila][columna];
         T nuevo_estado = this->posibles_estados[indice_estado];
-        this->estado(fila,columna) = nuevo_estado;
-        double E_final = this->energia();
+
+
+        indice = -1;
+        indice_v = -1;
+        T estado_ = this->estado[fila][columna];
+        for (int i=0; i<this->N_posibles_estados; i++){
+          if (this->posibles_estados[i] == estado_) indice=i;
+        }
+        int **vecinos;      
+        vecinos = obtener_primeros_vecinos(fila, columna);
+        if (estado_ == this->condicion_externa)
+        {
+          E_inicial -= this->influencia_externa;
+        }
+        for (int i=0; i<4; i++) 
+        {
+          T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
+          for (int j=0; j<this->N_posibles_estados; j++){
+            if (this->posibles_estados[j] == vecino_) indice_v=j;
+          }
+          ASSERT(indice>=0,"indice < 0");
+          ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
+          ASSERT(indice_v>=0,"indice_v < 0");
+          ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
+
+          E_inicial -= this->influencia_primeros_vecinos[indice][indice_v];
+        }
+
+
+        this->estado[fila][columna] = nuevo_estado;
+        
+
+        indice_v = -1;
+        nuevo_estado;
+        if (nuevo_estado == this->condicion_externa)
+        {
+          E_final -= this->influencia_externa;
+        }
+        for (int i=0; i<4; i++) 
+        {
+          T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
+          for (int j=0; j<this->N_posibles_estados; j++){
+            if (this->posibles_estados[j] == vecino_) indice_v=j;
+          }
+          ASSERT(indice>=0,"indice < 0");
+          ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
+          ASSERT(indice_v>=0,"indice_v < 0");
+          ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
+
+          E_final -= this->influencia_primeros_vecinos[indice][indice_v];
+        }
+
+
         double prob = this->probabilidad(E_inicial, E_final);
-        if ((rand()*1.0/RAND_MAX) >= prob) {this->estado(fila,columna) = valor_anterior;}
+        if ((rand()*1.0/RAND_MAX) >= prob) {this->estado[fila][columna] = valor_anterior;}
     }
   }
 }
@@ -203,7 +263,7 @@ string MODELO::to_string()
   {
     for (int columna=0; columna<this->columnas; columna++)
     {
-      output += (string)this->estado(fila,columna)+"\t";
+      output += (string)this->estado[fila][columna]+"\t";
     }
     output+="\n";
   }
@@ -221,7 +281,7 @@ double MODELO::energia()
     {
       indice = -1;
       indice_v = -1;
-      T estado_ = this->estado(fila,columna);
+      T estado_ = this->estado[fila][columna];
       for (int i=0; i<this->N_posibles_estados; i++){
         if (this->posibles_estados[i] == estado_) indice=i;
       }
@@ -233,7 +293,7 @@ double MODELO::energia()
       }
       for (int i=0; i<4; i++) 
       {
-        T vecino_ = this->estado(vecinos[i][0], vecinos[i][1]);
+        T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
 	for (int j=0; j<this->N_posibles_estados; j++){
 	  if (this->posibles_estados[j] == vecino_) indice_v=j;
 	}
@@ -308,7 +368,7 @@ void MODELO::contar_estados()
     {
       for (int num_estado=0; num_estado<this->N_posibles_estados; num_estado++)
       {
-        T estado = this->estado(fila,columna);
+        T estado = this->estado[fila][columna];
         if (estado == posibles_estados[num_estado]) cantidad_estado[num_estado]++;
       }
     
