@@ -51,8 +51,14 @@ public:
   void set_influencia_externa(double new_value);
   void set_condicion_externa(T new_value);
   void set_influencia_primeros_vecinos(double **new_value);
+  double get_temp();
+  double get_kb();
+  double get_A_prob();
+  double get_influencia_externa();
+  T get_condicion_externa();
   int* get_cantidad_estado();
   void contar_estados();
+
 
 private:
   double temp;
@@ -251,7 +257,7 @@ double MODELO::probabilidad(double E_inicial, double E_final)
   double prob;
   if (E_inicial>=E_final) prob=this->A_prob;
   else{
-    if (this->temp != 0 && this->kb != 0) prob=this->A_prob*exp(-abs(E_inicial-E_final)/(this->temp*this->kb));
+    if (this->temp != 0 || this->kb != 0) prob=this->A_prob*exp(-abs(E_inicial-E_final)/(this->temp*this->kb));
     else prob=0.0;
   }
   ASSERT(0<=prob,"Fallo al calcular la probabilidad <0");
@@ -356,4 +362,34 @@ TEMPLATE
 int* MODELO::get_cantidad_estado()
 {
   return this->cantidad_estado;
+}
+
+TEMPLATE
+double MODELO::get_temp()
+{
+	return this->temp;
+}
+
+TEMPLATE
+double MODELO::get_kb()
+{
+	return this->kb;
+}
+
+TEMPLATE
+double MODELO::get_A_prob()
+{
+	return this->A_prob;
+}
+
+TEMPLATE
+double MODELO::get_influencia_externa()
+{
+	return this->influencia_externa;
+}
+
+TEMPLATE
+T MODELO::get_condicion_externa()
+{
+	return this->condicion_externa;
 }
