@@ -12,7 +12,7 @@
 
 \section*{Introducci\'on}
 
-En este proyecto he aplicado m\'etodos de la f\'isica estad\'istica a otros temas. Concretamente he usado el algoritmo de Metr\'opolis, basado en el m\'etodo de Montecarlo. Voy a introducir ambos m\'etodos, pero para mejor entendimiento es preferible consultar bibliograf\'ia especializada en el tema.
+En este proyecto he aplicado m\'etodos de la f\'isica estad\'istica a otros temas. Concretamente he usado el algoritmo de Metr\'opolis para estudiar un modelo de Potts (sistemas de varios niveles). El algoritmo de Metr\'opolis est\'a basado en el m\'etodo de Montecarlo. Voy a introducir ambos m\'etodos, pero para mejor entendimiento es preferible consultar bibliograf\'ia especializada en el tema.
 
 \subsection*{Montecarlo}
 
@@ -84,11 +84,32 @@ En estos casos hay que predecir c\'omo interacuaran los estados entre si. Para e
 \caption{S\'olo egoista y altruista. Temperatura nula.}
 \end{figure}
 
+
+\subsection*{Sistema de cuatro niveles (egoista, altruista, copia, contrario)}
+
+Ahora est\'an los comportamientos copia y contrario. Como par\'ametros he usado los mismos para egoista-copia que egoista-egoista, etc. copia-copia no gana ni pierde (al hacer el promedio) al igual que contrario-contrario. Se puede ver que la pareja egoista-copia son las m\'as estables en este caso, aunque la estrategia de copia es m\'as favorable. Observando las gr\'aficas para T=10 y T=100, se puede ver que debe haber una transici\'on de fase entre esas temperaturas, pues en una hay tendencias y en la otra no. 
+
+\begin{figure}
+\includegraphics[scale=0.4]{proporciones-kbT0-A1-inf5-copia.png}
+\caption{4 estados, T nula, tendencia hacia la copia}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.4]{proporciones-kbT10-A1-inf5-copia.png}
+\caption{4 estados, T nula, tendencia hacia la copia}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.4]{proporciones-kbT100-A1-inf5-copia.png}
+\caption{4 estados, T nula, tendencia hacia la copia}
+\end{figure}
 \newpage
 \newpage
 \section*{Bibliograf\'ia}
 - \textbf{''El gen egoista'' de Richard Dawkins}. Me he inspirado en \'el al realizar el ejemplo de egoistas, altruistas y precavidos. En su libro hay muchos m\'as ejemplos interesantes de c\'omo evolucionan los patrones de comportamiento en la naturaleza.
 
-- \textbf{''Programaci\'on con C++''de  Al Stevens y Clayton Walnum, Ed Anaya}. Lo he usado como consulta para mirar las cosas que no recordaba de C++ y buscar informaci\'on sobre como hacer otras que no conoc\'ia.  
+- \textbf{''Programaci\'on con C++''de  Al Stevens y Clayton Walnum, Ed Anaya}. Lo he usado como consulta para mirar las cosas que no recordaba de C++ y buscar informaci\'on sobre como hacer otras que no conoc\'ia.
+
+
 
 \end{document}

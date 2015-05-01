@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.4.24)  30 APR 2015 20:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.4.24)  1 MAY 2015 10:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -259,16 +259,43 @@ File: p-0-1-0-2estados.png Graphic file (type png)
 <use p-0-1-0-2estados.png>
 Package pdftex.def Info: p-0-1-0-2estados.png used on input line 83.
 (pdftex.def)             Requested size: 192.71658pt x 90.33589pt.
+
+<proporciones-kbT0-A1-inf5-copia.png, id=20, 481.8pt x 225.84375pt>
+File: proporciones-kbT0-A1-inf5-copia.png Graphic file (type png)
+
+<use proporciones-kbT0-A1-inf5-copia.png>
+Package pdftex.def Info: proporciones-kbT0-A1-inf5-copia.png used on input line
+ 93.
+(pdftex.def)             Requested size: 192.71658pt x 90.33589pt.
+
+<proporciones-kbT10-A1-inf5-copia.png, id=21, 481.8pt x 225.84375pt>
+File: proporciones-kbT10-A1-inf5-copia.png Graphic file (type png)
+
+<use proporciones-kbT10-A1-inf5-copia.png>
+Package pdftex.def Info: proporciones-kbT10-A1-inf5-copia.png used on input lin
+e 98.
+(pdftex.def)             Requested size: 192.71658pt x 90.33589pt.
+
+<proporciones-kbT100-A1-inf5-copia.png, id=22, 481.8pt x 225.84375pt>
+File: proporciones-kbT100-A1-inf5-copia.png Graphic file (type png)
+
+<use proporciones-kbT100-A1-inf5-copia.png>
+Package pdftex.def Info: proporciones-kbT100-A1-inf5-copia.png used on input li
+ne 103.
+(pdftex.def)             Requested size: 192.71658pt x 90.33589pt.
  [3 <./p-0-1-0-precavido.png> <./p-10000-1-0-precavido.png> <./p-0-1-0-2estados
-.png>] (./informe.aux
+.png> <./proporciones-kbT0-A1-inf5-copia.png> <./proporciones-kbT10-A1-inf5-cop
+ia.png>] [4
+
+ <./proporciones-kbT100-A1-inf5-copia.png>] (./informe.aux
 LaTeX Info: Redefining \. on input line 7.
 LaTeX Info: Redefining \% on input line 7.
 ) ) 
 Here is how much of TeX's memory you used:
- 2942 strings out of 493105
- 39168 string characters out of 6137072
+ 2957 strings out of 493105
+ 39765 string characters out of 6137072
  114613 words of memory out of 5000000
- 6381 multiletter control sequences out of 15000+600000
+ 6393 multiletter control sequences out of 15000+600000
  9023 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  37i,8n,30p,963b,384s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -277,10 +304,10 @@ sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on informe.pdf (3 pages, 96167 bytes).
+Output written on informe.pdf (4 pages, 107334 bytes).
 PDF statistics:
- 44 PDF objects out of 1000 (max. 8388607)
- 23 compressed objects within 1 object stream
+ 53 PDF objects out of 1000 (max. 8388607)
+ 25 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
