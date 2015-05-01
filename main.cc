@@ -26,8 +26,8 @@ int main(int argc, char** argv){
       influencia_vecinos[i][j] = 0;
     }
   }
-  const int size_x = 100;
-  const int size_y = 100;
+  const int size_x = 10;
+  const int size_y = 10;
   modelo<size_y,size_x,string> modelo1;
   posibles_estados[0] = "egoista";
   posibles_estados[1] = "altruista";
@@ -48,7 +48,7 @@ int main(int argc, char** argv){
   antisimetriza(influencia_vecinos,N_posibles_estados,N_posibles_estados);
   influencia_vecinos[2][1] = -1000;
   influencia_vecinos[2][0] = -1000;
-  const int longitud_paso=10;
+  const int longitud_paso=1;
   const int numero_pasos=250;
   modelo1.set_influencia_primeros_vecinos(influencia_vecinos);
 
@@ -123,7 +123,7 @@ void antisimetriza(double **matriz, int filas, int columnas)
   {
     for (int columna=fila+1; columna<columnas; columna++)
     {
-      matriz[columna][matriz] = -matriz[fila][columna];
+      matriz[columna][fila] = -matriz[fila][columna];
     }
   }
 }

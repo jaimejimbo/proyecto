@@ -308,7 +308,7 @@ void MODELO::cambiar_estado()
 
 	    E_final -= this->influencia_primeros_vecinos[indice][indice_v];
 	  }
-*/
+*/  
 	  //cout<<E_inicial<<"\t"<<E_final<<"\n";
 	  double prob = this->probabilidad(E_inicial, E_final);
 	  if ((rand()*1.0/RAND_MAX) >= prob) {this->estado[fila][columna] = valor_anterior;}
@@ -386,7 +386,7 @@ double MODELO::probabilidad(double E_inicial, double E_final)
   double prob;
   if (E_inicial>=E_final) prob=this->A_prob;
   else{
-    if (this->temp != 0 || this->kb != 0) prob=this->A_prob*exp(-abs(E_inicial-E_final)/(this->temp*this->kb));
+    if (this->temp != 0 && this->kb != 0) prob=this->A_prob*exp(-abs(E_inicial-E_final)/(this->temp*this->kb));
     else prob=0.0;
   }
   ASSERT(0<=prob,"Fallo al calcular la probabilidad <0");
