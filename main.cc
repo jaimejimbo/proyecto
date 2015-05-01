@@ -86,7 +86,7 @@ int main(int argc, char** argv){
 	modelo1.cambiar_estado();
         if (k==longitud_paso){
 		modelo1.contar_estados();
-		num_estados = modelo1.get_cantidad_estado();
+		num_estados = modelo1.get_cantidades_por_estado();
           	proporciones_t<<i<<"\t";
 		for (int j=0; j<N_posibles_estados; j++)
 		{

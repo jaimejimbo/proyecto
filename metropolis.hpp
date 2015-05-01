@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 
+//Depuración
 #define NDEBUG
 #ifndef NDEBUG
 #   define ASSERT(condition, message) \
@@ -26,24 +27,51 @@
 #endif
 //#define ESPINES
 
+#define LONG
 
+
+//uso un template(plantilla) para que se puedan usar estados definidos como texto, números u objetos abstractos.
 template< size_t M, size_t N, typename T = string>
 class modelo
 {
+/*
+ *	Clase modelo
+ *	tiene los métodos y variables necesarias para realizar las simulaciones
+ *     de una forma más cómoda.
+*/
+
+
 public:
   modelo();
-  void definir_posibles_estados(int N_posibles_estados, T *posibles_estados);
+  void definir_posibles_estados(int N_posibles_estados, T *posibles_estados);	
+  //llena la matriz con estados escogidos al azar entre los posibles.
   void llenar();
+
+  //Métodos de acceso a los valores de la matriz (se accede como matriz(fila,columna) en vez de matriz[fila][columna] empezando por (0,0).
   inline T& operator()( size_t row_index, size_t col_index );
   inline const T& operator()( size_t row_index, size_t col_index ) const;
   inline T& at( size_t row_index, size_t col_index );
   inline const T& at( size_t row_index, size_t col_index ) const;
+
+
+  //métodos importantes
+  //-------------------
   void cambiar_estado();
+  //calcula la probabilidad con las fórmulas del algoritmo de Metrópolis.
   double probabilidad(double E_inicial, double E_final);
   double energia();
+  //este método no está implementado
   double entropia();
+  //convierte la matriz a una cadena de caracteres para mostrarla en pantalla con cout.
   string to_string();
+  //devuelve un vector con los primeros vecinos (arriba, derecha, abajo, izquierda)
   int **obtener_primeros_vecinos(int fila, int columna);
+  //mira cuantos elementos hay en cada estado y lo guarda en la variable cantidades_por_estado
+  void contar_estados();
+
+
+  //métodos para cambiar los valores de los parámetros, y para obtenerlos.
+  //-------------------
   void set_temp(double new_value);
   void set_kb(double new_value);
   void set_A_prob(double new_value);
@@ -55,23 +83,28 @@ public:
   double get_A_prob();
   double get_influencia_externa();
   T get_condicion_externa();
-  int* get_cantidad_estado();
-  void contar_estados();
+  int* get_cantidades_por_estado();
 
 
 private:
+  //parámetros del sistema (Temperatura, constante de Boltzman, parámetro A de las ecuaciones de Metrópolis.
   double temp;
   double kb;
   double A_prob;
   T **estado;
+  //dimensiones de la matriz 2D
   int filas;
   int columnas;
   int N_posibles_estados;
+  //posibles estados en los que puede estar un elemento del sistema
   T *posibles_estados;
+  //Campo magnético externo o similar (y si influencia sobre el sistema): H,m
   double influencia_externa;
   T condicion_externa;
+  //Como interactúan los elementos entre sí. Es una matriz (elemento1 con elemento1, elemento1 con elemento2...)
   double **influencia_primeros_vecinos;
-  int *cantidad_estado;
+  //cuántos estados hay de cada tipo
+  int *cantidades_por_estado;
 };
 
 
@@ -91,6 +124,9 @@ private:
 TEMPLATE
 MODELO::modelo()
 {
+/*
+*	Creador
+*/
   this->filas = (int)M;
   this->columnas = (int)N;
   estado = new T*[this->filas];
@@ -104,14 +140,20 @@ MODELO::modelo()
 TEMPLATE
 void MODELO::definir_posibles_estados(int N_posibles_estados_in, T *posibles_estados_in)
 {
+/*
+*   Se definen los posibles estados.
+*/
   this->posibles_estados = posibles_estados_in;
   this->N_posibles_estados = N_posibles_estados_in;
-  this->cantidad_estado = new int[N_posibles_estados_in];
+  this->cantidades_por_estado = new int[N_posibles_estados_in];
 }
 
 TEMPLATE
 void MODELO::llenar()
 {
+/*
+*  Llena la matriz de estados con estados aleatorios escogidos entre los posibles estados.
+*/
   srand(time(NULL));
   srand(rand());
   int random_num=0;
@@ -131,6 +173,9 @@ TEMPLATE
 inline T&
 MODELO::at( size_t row_index, size_t col_index )
 {
+/*
+*    Este método no lo uso para nada, pero he visto que en librerías de matrices lo definen para usarlo en el operador()
+*/
     ASSERT(0<=row_index,"");
     ASSERT(row_index<this->filas,"");
     ASSERT(0<=col_index,"");
@@ -143,6 +188,9 @@ TEMPLATE
 const inline T&
 MODELO::at( size_t row_index, size_t col_index ) const
 {
+/*
+*	Lo mismo que arriba
+*/
     ASSERT(0<=row_index,"");
     ASSERT(row_index<this->filas,"");
     ASSERT(0<=col_index,"");
@@ -154,6 +202,9 @@ TEMPLATE
 inline T&
 MODELO::operator()( size_t row_index, size_t col_index )
 {
+/*
+*   Permite acceder a los valores de la matriz con paréntesis.
+*/
     ASSERT(0<=row_index,"");
     ASSERT(row_index<this->filas,"");
     ASSERT(0<=col_index,"");
@@ -166,6 +217,9 @@ TEMPLATE
 const inline T&
 MODELO::operator()( size_t row_index, size_t col_index ) const
 {
+/*
+*	Lo mismo. A esta función se la llama cuando se usa en una zona de constantes.
+*/
     ASSERT(0<=row_index,"");
     ASSERT(row_index<this->filas,"");
     ASSERT(0<=col_index,"");
@@ -177,90 +231,97 @@ MODELO::operator()( size_t row_index, size_t col_index ) const
 TEMPLATE
 void MODELO::cambiar_estado()
 {
+/*
+*     Cambia el estado de una posición aleatoria por un estado aleatorio. Para ello usa la probabilidad(por lo que tiene que obtener las energías).
+*/
   srand(time(NULL));
   srand(rand());
-  int fila;
-  int columna;
-  double E_inicial = 0,
-         E_final=0;
-  int indice,
-      indice_v;
-  for (int fila_=0; fila_ < this->filas; fila_++)
+#ifdef LONG
+  for (int ii=0; ii<this->filas*this->columnas; ii++)
   {
-     for (int columna_=0; columna_ < this->columnas; columna_++)
-     {
-        E_inicial=0;
-        E_final=0;
-	      fila = (int)(rand()%(this->filas));
-	      columna = (int)(rand()%(this->columnas));
-        int indice_estado = (int)(rand()%(this->N_posibles_estados));
-        T valor_anterior = estado[fila][columna];
-        T nuevo_estado = this->posibles_estados[indice_estado];
+#endif
+    int fila;
+    int columna;
+    double E_inicial = 0,
+           E_final=0;
+    int indice,
+        indice_v;
+	  E_inicial=0;
+	  E_final=0;
+    fila = (int)(rand()%(this->filas));
+    columna = (int)(rand()%(this->columnas));
+	  int indice_estado = (int)(rand()%(this->N_posibles_estados));
+	  T valor_anterior = estado[fila][columna];
+	  T nuevo_estado = this->posibles_estados[indice_estado];
 
 
-        indice = -1;
-        indice_v = -1;
-        T estado_ = this->estado[fila][columna];
-        for (int i=0; i<this->N_posibles_estados; i++){
-          if (this->posibles_estados[i] == estado_) indice=i;
-        }
-        int **vecinos;      
-        vecinos = obtener_primeros_vecinos(fila, columna);
-        if (estado_ == this->condicion_externa)
-        {
-          E_inicial -= this->influencia_externa;
-        }
-        for (int i=0; i<4; i++) 
-        {
-          T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
-          for (int j=0; j<this->N_posibles_estados; j++){
-            if (this->posibles_estados[j] == vecino_) indice_v=j;
-          }
-          ASSERT(indice>=0,"indice < 0");
-          ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
-          ASSERT(indice_v>=0,"indice_v < 0");
-          ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
+	  indice = -1;
+	  indice_v = -1;
+	  T estado_ = this->estado[fila][columna];
+	  for (int i=0; i<this->N_posibles_estados; i++){
+	    if (this->posibles_estados[i] == estado_) indice=i;
+	  }
+	  int **vecinos;      
+	  vecinos = obtener_primeros_vecinos(fila, columna);
+	  if (estado_ == this->condicion_externa)
+	  {
+	    E_inicial -= this->influencia_externa;
+	  }
+	  for (int i=0; i<4; i++) 
+	  {
+	    T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
+	    for (int j=0; j<this->N_posibles_estados; j++){
+	      if (this->posibles_estados[j] == vecino_) indice_v=j;
+	    }
+	    ASSERT(indice>=0,"indice < 0");
+	    ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
+	    ASSERT(indice_v>=0,"indice_v < 0");
+	    ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
 
-          E_inicial -= this->influencia_primeros_vecinos[indice][indice_v];
-        }
+	    E_inicial -= this->influencia_primeros_vecinos[indice][indice_v];
+	  }
 
 
-        this->estado[fila][columna] = nuevo_estado;
-        
-	indice = -1;
-        indice_v = -1;
-        estado_ = nuevo_estado;
-        for (int i=0; i<this->N_posibles_estados; i++){
-          if (this->posibles_estados[i] == estado_) indice=i;
-        }
-        if (nuevo_estado == this->condicion_externa)
-        {
-          E_final -= this->influencia_externa;
-        }
-        for (int i=0; i<4; i++) 
-        {
-          T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
-          for (int j=0; j<this->N_posibles_estados; j++){
-            if (this->posibles_estados[j] == vecino_) indice_v=j;
-          }
-          ASSERT(indice>=0,"indice < 0");
-          ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
-          ASSERT(indice_v>=0,"indice_v < 0");
-          ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
+	  this->estado[fila][columna] = nuevo_estado;
 
-          E_final -= this->influencia_primeros_vecinos[indice][indice_v];
-        }
+	  indice = -1;
+	  indice_v = -1;
+	  estado_ = nuevo_estado;
+	  for (int i=0; i<this->N_posibles_estados; i++){
+	    if (this->posibles_estados[i] == estado_) indice=i;
+	  }
+	  if (nuevo_estado == this->condicion_externa)
+	  {
+	    E_final -= this->influencia_externa;
+	  }
+	  for (int i=0; i<4; i++) 
+	  {
+	    T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
+	    for (int j=0; j<this->N_posibles_estados; j++){
+	      if (this->posibles_estados[j] == vecino_) indice_v=j;
+	    }
+	    ASSERT(indice>=0,"indice < 0");
+	    ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
+	    ASSERT(indice_v>=0,"indice_v < 0");
+	    ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
 
-        //cout<<E_inicial<<"\t"<<E_final<<"\n";
-        double prob = this->probabilidad(E_inicial, E_final);
-        if ((rand()*1.0/RAND_MAX) >= prob) {this->estado[fila][columna] = valor_anterior;}
-    }
+	    E_final -= this->influencia_primeros_vecinos[indice][indice_v];
+	  }
+
+	  //cout<<E_inicial<<"\t"<<E_final<<"\n";
+	  double prob = this->probabilidad(E_inicial, E_final);
+	  if ((rand()*1.0/RAND_MAX) >= prob) {this->estado[fila][columna] = valor_anterior;}
+#ifdef LONG
   }
+#endif
 }
 
 TEMPLATE
 string MODELO::to_string()
 {
+/*
+*    Permite mostrar la matriz en pantalla (para depurar)
+*/
   string output="";
   for (int fila=0; fila<this->filas; fila++)
   {
@@ -276,6 +337,9 @@ string MODELO::to_string()
 TEMPLATE
 double MODELO::energia()
 {
+/*
+*	Calcula la energía mediante una expresión tipo Landau.
+*/
   int indice, indice_v, fila, columna;
   double E=0;
   for (int fila=0; fila<this->filas; fila++)
@@ -290,7 +354,7 @@ double MODELO::energia()
       }
       int **vecinos;      
       vecinos = obtener_primeros_vecinos(fila, columna);
-      if (estado_ == this->condicion_externa)
+      if (estado_ == this->condicion_externa)    //no lo hago con sumatorios, sino con condicionales para poder generalizar el proceso
       {
         E -= this->influencia_externa;
       }
@@ -315,6 +379,9 @@ double MODELO::energia()
 TEMPLATE
 double MODELO::probabilidad(double E_inicial, double E_final)
 {
+/*
+*     Se calcula la probabilidad con el método de Metrópolis
+*/
   double prob;
   if (E_inicial>=E_final) prob=this->A_prob;
   else{
@@ -329,12 +396,18 @@ double MODELO::probabilidad(double E_inicial, double E_final)
 TEMPLATE
 double MODELO::entropia()
 {
+/*
+*	No implementado
+*/
   return 0;
 }
 
 TEMPLATE
 int** MODELO::obtener_primeros_vecinos(int fila, int columna)
 {
+/*
+*	devuelve un vector con los primeros vecinos (^, ->, v, <-)
+*/
   int** vecinos = new int*[4];
   for (int vecino=0; vecino<4; vecino++)
   {
@@ -359,9 +432,12 @@ int** MODELO::obtener_primeros_vecinos(int fila, int columna)
 TEMPLATE
 void MODELO::contar_estados()
 {
+/*
+*	Mira cuantos elementos están en cada estado.
+*/
   for (int num_estado=0; num_estado<this->N_posibles_estados; num_estado++)
   {
-    cantidad_estado[num_estado] = 0;  
+    cantidades_por_estado[num_estado] = 0;  
   }
   for (int fila=0; fila<this->filas; fila++)
   {
@@ -370,7 +446,7 @@ void MODELO::contar_estados()
       for (int num_estado=0; num_estado<this->N_posibles_estados; num_estado++)
       {
         T estado = this->estado[fila][columna];
-        if (estado == posibles_estados[num_estado]) cantidad_estado[num_estado]++;
+        if (estado == posibles_estados[num_estado]) cantidades_por_estado[num_estado]++;
       }
     
     }
@@ -420,9 +496,9 @@ void MODELO::set_influencia_primeros_vecinos(double **new_influencia_primeros_ve
 
 
 TEMPLATE
-int* MODELO::get_cantidad_estado()
+int* MODELO::get_cantidades_por_estado()
 {
-  return this->cantidad_estado;
+  return this->cantidades_por_estado;
 }
 
 TEMPLATE
