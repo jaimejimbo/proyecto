@@ -255,7 +255,7 @@ void MODELO::cambiar_estado()
 	  T nuevo_estado = this->posibles_estados[indice_estado];
 
 
-	  indice = -1;
+/*	  indice = -1;
 	  indice_v = -1;
 	  T estado_ = this->estado[fila][columna];
 	  for (int i=0; i<this->N_posibles_estados; i++){
@@ -280,10 +280,11 @@ void MODELO::cambiar_estado()
 
 	    E_inicial -= this->influencia_primeros_vecinos[indice][indice_v];
 	  }
-
-
+*/
+    E_inicial = this->energia();
 	  this->estado[fila][columna] = nuevo_estado;
-
+    E_final = this->energia();
+/*
 	  indice = -1;
 	  indice_v = -1;
 	  estado_ = nuevo_estado;
@@ -307,7 +308,7 @@ void MODELO::cambiar_estado()
 
 	    E_final -= this->influencia_primeros_vecinos[indice][indice_v];
 	  }
-
+*/
 	  //cout<<E_inicial<<"\t"<<E_final<<"\n";
 	  double prob = this->probabilidad(E_inicial, E_final);
 	  if ((rand()*1.0/RAND_MAX) >= prob) {this->estado[fila][columna] = valor_anterior;}

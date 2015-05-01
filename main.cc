@@ -123,7 +123,7 @@ void antisimetriza(double **matriz, int filas, int columnas)
   {
     for (int columna=fila+1; columna<columnas; columna++)
     {
-      matriz[fila][columnas-columna] = -matriz[fila][columna];
+      matriz[columna][matriz] = -matriz[fila][columna];
     }
   }
 }
