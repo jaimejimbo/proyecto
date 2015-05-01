@@ -185,77 +185,71 @@ void MODELO::cambiar_estado()
          E_final=0;
   int indice,
       indice_v;
-  for (int fila_=0; fila_ < this->filas; fila_++)
-  {
-     for (int columna_=0; columna_ < this->columnas; columna_++)
-     {
-        E_inicial=0;
-        E_final=0;
+	E_inicial=0;
+	E_final=0;
 	      fila = (int)(rand()%(this->filas));
 	      columna = (int)(rand()%(this->columnas));
-        int indice_estado = (int)(rand()%(this->N_posibles_estados));
-        T valor_anterior = estado[fila][columna];
-        T nuevo_estado = this->posibles_estados[indice_estado];
+	int indice_estado = (int)(rand()%(this->N_posibles_estados));
+	T valor_anterior = estado[fila][columna];
+	T nuevo_estado = this->posibles_estados[indice_estado];
 
 
-        indice = -1;
-        indice_v = -1;
-        T estado_ = this->estado[fila][columna];
-        for (int i=0; i<this->N_posibles_estados; i++){
-          if (this->posibles_estados[i] == estado_) indice=i;
-        }
-        int **vecinos;      
-        vecinos = obtener_primeros_vecinos(fila, columna);
-        if (estado_ == this->condicion_externa)
-        {
-          E_inicial -= this->influencia_externa;
-        }
-        for (int i=0; i<4; i++) 
-        {
-          T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
-          for (int j=0; j<this->N_posibles_estados; j++){
-            if (this->posibles_estados[j] == vecino_) indice_v=j;
-          }
-          ASSERT(indice>=0,"indice < 0");
-          ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
-          ASSERT(indice_v>=0,"indice_v < 0");
-          ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
-
-          E_inicial -= this->influencia_primeros_vecinos[indice][indice_v];
-        }
-
-
-        this->estado[fila][columna] = nuevo_estado;
-        
 	indice = -1;
-        indice_v = -1;
-        estado_ = nuevo_estado;
-        for (int i=0; i<this->N_posibles_estados; i++){
-          if (this->posibles_estados[i] == estado_) indice=i;
-        }
-        if (nuevo_estado == this->condicion_externa)
-        {
-          E_final -= this->influencia_externa;
-        }
-        for (int i=0; i<4; i++) 
-        {
-          T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
-          for (int j=0; j<this->N_posibles_estados; j++){
-            if (this->posibles_estados[j] == vecino_) indice_v=j;
-          }
-          ASSERT(indice>=0,"indice < 0");
-          ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
-          ASSERT(indice_v>=0,"indice_v < 0");
-          ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
+	indice_v = -1;
+	T estado_ = this->estado[fila][columna];
+	for (int i=0; i<this->N_posibles_estados; i++){
+	  if (this->posibles_estados[i] == estado_) indice=i;
+	}
+	int **vecinos;      
+	vecinos = obtener_primeros_vecinos(fila, columna);
+	if (estado_ == this->condicion_externa)
+	{
+	  E_inicial -= this->influencia_externa;
+	}
+	for (int i=0; i<4; i++) 
+	{
+	  T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
+	  for (int j=0; j<this->N_posibles_estados; j++){
+	    if (this->posibles_estados[j] == vecino_) indice_v=j;
+	  }
+	  ASSERT(indice>=0,"indice < 0");
+	  ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
+	  ASSERT(indice_v>=0,"indice_v < 0");
+	  ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
 
-          E_final -= this->influencia_primeros_vecinos[indice][indice_v];
-        }
+	  E_inicial -= this->influencia_primeros_vecinos[indice][indice_v];
+	}
 
-        //cout<<E_inicial<<"\t"<<E_final<<"\n";
-        double prob = this->probabilidad(E_inicial, E_final);
-        if ((rand()*1.0/RAND_MAX) >= prob) {this->estado[fila][columna] = valor_anterior;}
-    }
-  }
+
+	this->estado[fila][columna] = nuevo_estado;
+
+	indice = -1;
+	indice_v = -1;
+	estado_ = nuevo_estado;
+	for (int i=0; i<this->N_posibles_estados; i++){
+	  if (this->posibles_estados[i] == estado_) indice=i;
+	}
+	if (nuevo_estado == this->condicion_externa)
+	{
+	  E_final -= this->influencia_externa;
+	}
+	for (int i=0; i<4; i++) 
+	{
+	  T vecino_ = this->estado[vecinos[i][0]][vecinos[i][1]];
+	  for (int j=0; j<this->N_posibles_estados; j++){
+	    if (this->posibles_estados[j] == vecino_) indice_v=j;
+	  }
+	  ASSERT(indice>=0,"indice < 0");
+	  ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
+	  ASSERT(indice_v>=0,"indice_v < 0");
+	  ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
+
+	  E_final -= this->influencia_primeros_vecinos[indice][indice_v];
+	}
+
+	//cout<<E_inicial<<"\t"<<E_final<<"\n";
+	double prob = this->probabilidad(E_inicial, E_final);
+	if ((rand()*1.0/RAND_MAX) >= prob) {this->estado[fila][columna] = valor_anterior;}
 }
 
 TEMPLATE
