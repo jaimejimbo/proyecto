@@ -45,14 +45,16 @@ He usado c++ por cuestiones pr\'acticas. Se programar en otros lenguajes (Matlab
 
 Al aumentar el n\'umero de pasos, el uso de la memoria RAM vuelve a dispararse. Con algo de optimizaci\'on se podr\'ia arreglar esto, pero no hay tiempo. De todas formas he hecho que el programa haga menos cambios de estados por paso, lo que reduce el uso de recursos (habr\'a que realizar m\'as pasos para obtener el mismo resultado).
 
+\section*{C\'omo usar el c\'odigo}
+
+Todas las funciones y cosas necesarias est\'an en el archivo \"metropolis.hpp\". En \'el est\'an las declaraciones de cada m\'etodo y variable. Les he dado nombres largos e intuitivos, para facilitar la compresi\'on. Leyendo la parte de arriba(header) de \"metropolis.hpp\" deber\'ia bastar para poder usarlo. Para m\'as informaci\'on ver las anotaciones en el c\'odigo.
+
 \section*{Simulaciones}
 \subsection*{Sistema de dos niveles (espines up y down)}
 
 Este modelo ser\'ia igual a uno normal de Metr\'opolis de 2 niveles. La diferencia s\'olo es la generalizaci\'on de la librer\'ia.
 
-% INCLUIR IMAGENES
-
-Puede verse c\'omo la energ\'ia disminuye con los pasos y el sistema se decanta por una de las 2 magnetizaciones (para el caso T=0). Aumentando la T se ve como se recupera la simetr\'ia, por lo que la magnetizaci\'on se anula (el n\'umero de espines hacia arriba y hacia abajo es m\'as o menos el mismo). No he visto a que temperatura est\'a la transici\'on de fase porque me llevar\'ia un par de d\'ias y no los tengo. De todas formas el m\'etodo es sencillo. Es dejar que el sistema evolucione y al cabo de un rato ver la magnetizaci\'on. Si se repite el proceso para varias temperaturas, se ver\'a que en cierto momento la magnetizac\'on se hace depreciable. Hab\'ia conseguido hacerlo, m\'as o menos, pero el programa empez\'o a dar fallos as\'i que tuve que volver a una versi\'on anterior en la que a\'un no lo hab\'ia programado.
+En la figura 1 puede verse c\'omo la energ\'ia disminuye con los pasos y el sistema se decanta por una de las 2 magnetizaciones (para el caso T=0). Aumentando la T (figura 2) se ve como se recupera la simetr\'ia, por lo que la magnetizaci\'on se anula (el n\'umero de espines hacia arriba y hacia abajo es m\'as o menos el mismo). No he visto a que temperatura est\'a la transici\'on de fase porque me llevar\'ia un par de d\'ias y no los tengo. De todas formas el m\'etodo es sencillo. Es dejar que el sistema evolucione y al cabo de un rato ver la magnetizaci\'on. Si se repite el proceso para varias temperaturas, se ver\'a que en cierto momento la magnetizac\'on se hace depreciable. Hab\'ia conseguido hacerlo, m\'as o menos, pero el programa empez\'o a dar fallos as\'i que tuve que volver a una versi\'on anterior en la que a\'un no lo hab\'ia programado.
 
 \subsection*{Sistema de tres niveles (egoista, altruista, precavido)}
 
@@ -66,7 +68,7 @@ Ahora ya hay que echarle un poco de imaginaci\'on al asunto. Suponiendo que hay 
 \caption{E(t) con T elevada}
 \end{figure}
 
-En la figura con T nula, el sistema se ordena f\'acilmente. En la de T alta, al sistema le cuesta m\'as ordenarse.
+En la figura 3, el sistema se ordena f\'acilmente. En la 4, al sistema le cuesta m\'as ordenarse.
 
 \begin{figure}
 \includegraphics[scale=.4]{p-0-1-0-precavido.png}
@@ -77,9 +79,9 @@ En la figura con T nula, el sistema se ordena f\'acilmente. En la de T alta, al 
 \caption{Proporciones para T alta}
 \end{figure}
 
-Puede verse que en la de T nula el sistema evoluciona hacia cierta distribuci\'on de los estados, mientras que a T elevada el sistema tiende a la equiprobabilidad de los estados (33\%).
+Puede verse que en la figura 3 el sistema evoluciona hacia cierta distribuci\'on de los estados, mientras que en la 4 el sistema tiende a la equiprobabilidad de los estados (33\%).
 
-En estos casos hay que predecir c\'omo interacuaran los estados entre si. Para este caso he imaginado que un egoista junto a otro egoista no sera producente. Un egoista al lado de un altruista saldr\'a ganando, y el segundo perdiendo, l\'ogicamente. Altruista-altruista funcionar\'a bien, pues saldr\'an ganando los dos. Luego he introducido al precavido, que lo que hace es no fiarse y dar solo si recibe algo, por lo que siempre gana. Junto al altruista ganan los dos, mientras que junto al egoista no pierde ninguno. Ser\'ia como una copia del vecino. Se puede ver que es la estrategia m\'as estable. Su presencia impulsa a los altruistas. Sin ellos el comportamiento ser\'ia distinto, como se muestra en la otra figura. Se ve que la proporci\'on se va a 50\%, m\'as o menos. He mantenido el estado precavido porque era m\'as f\'acil que volver a cambiar el programa a 2 estados. He hecho que desaparezca r\'apidamente con los factores.
+En estos casos hay que predecir c\'omo interacuaran los estados entre si. Para este caso he imaginado que un egoista junto a otro egoista no sera producente. Un egoista al lado de un altruista saldr\'a ganando, y el segundo perdiendo, l\'ogicamente. Altruista-altruista funcionar\'a bien, pues saldr\'an ganando los dos. Luego he introducido al precavido, que lo que hace es no fiarse y dar solo si recibe algo, por lo que siempre gana. Junto al altruista ganan los dos, mientras que junto al egoista no pierde ninguno. Ser\'ia como una copia del vecino. Se puede ver que es la estrategia m\'as estable. Su presencia impulsa a los altruistas. Sin ellos el comportamiento ser\'ia distinto, como se muestra en la otra figura. Se ve en la figura 5 que la proporci\'on se va a 50\%, m\'as o menos (ganando los egoistas). He mantenido el estado precavido porque era m\'as f\'acil que volver a cambiar el programa a 2 estados. He hecho que desaparezca r\'apidamente con los factores.
 
 \begin{figure}
 \includegraphics[scale=0.4]{p-0-1-0-2estados.png}
@@ -89,7 +91,7 @@ En estos casos hay que predecir c\'omo interacuaran los estados entre si. Para e
 
 \subsection*{Sistema de cuatro niveles (egoista, altruista, copia, contrario)}
 
-Ahora est\'an los comportamientos copia y contrario. Como par\'ametros he usado los mismos para egoista-copia que egoista-egoista, etc. copia-copia no gana ni pierde (al hacer el promedio) al igual que contrario-contrario. Se puede ver que la pareja egoista-copia son las m\'as estables en este caso, aunque la estrategia de copia es m\'as favorable. Observando las gr\'aficas para T=10 y T=100, se puede ver que debe haber una transici\'on de fase entre esas temperaturas, pues en una hay tendencias y en la otra no. 
+Ahora est\'an los comportamientos copia y contrario. Como par\'ametros he usado los mismos para egoista-copia que egoista-egoista, etc. copia-copia no gana ni pierde (al hacer el promedio) al igual que contrario-contrario. Se puede ver que la pareja egoista-copia son las m\'as estables en este caso, aunque la estrategia de copia es m\'as favorable. Observando las gr\'aficas 7,8, se puede ver que debe haber una transici\'on de fase entre esas temperaturas, pues en una hay tendencias y en la otra no. 
 
 \begin{figure}
 \includegraphics[scale=0.4]{proporciones-kbT0-A1-inf5-copia.png}
@@ -98,15 +100,32 @@ Ahora est\'an los comportamientos copia y contrario. Como par\'ametros he usado 
 
 \begin{figure}
 \includegraphics[scale=0.4]{proporciones-kbT10-A1-inf5-copia.png}
-\caption{4 estados, T nula, tendencia hacia la copia}
+\caption{4 estados, T 10, tendencia hacia la copia}
 \end{figure}
 
 \begin{figure}
 \includegraphics[scale=0.4]{proporciones-kbT100-A1-inf5-copia.png}
-\caption{4 estados, T nula, tendencia hacia la copia}
+\caption{4 estados, T 100, tendencia hacia la copia}
 \end{figure}
-\newpage
-\newpage
+
+\section*{Conclusiones}
+
+Podr\'ia seguir a\'nadiendo niveles, pero creo que ya se ha visto m\'as o menos la idea del programa (que no es m\'as que la del algoritmo de Metr\'opolis). He usado los ejemplos bas\'andome en el libro de Richard Dawkins, pero se puede usar cualquier otro ejemplo. En lo \'unico que hay que fijarse es en las interacciones entre estados. 
+
+
+\section*{Posibles mejoras}
+
+- Optimizando el programa se podr\'ian haber estudiado sistemas m\'as grandes y evoluciones durante m\'as pasos, por lo que ser\'a buena idea. 
+
+- Se podr\'ian usar \textit{pipes} del sistema operativo para automatizar mejor el dibujado de los datos, pero no he tenido tiempo para estudiarme el tema.
+
+- Para espines se pueden usar Booleans, lo que reduce la memoria usada (esto simplemente es cambiar la declaraci\'on en la plantilla).
+
+- Tambi\'en se podr\'ia crear un diccionario, asociando a cada entero un estado, con lo que se cambiar\'ia el tipo base de string a int, reduciendo el uso de RAM.
+
+- Como he explicado en la parte de simulaciones, se podr\'ia estudiar la temperatura cr\'itica haciendo una nueva rutina que cambie muchas veces los estados, mida la magnetizaci\'on y resetee el sistema para diferentes temperaturas.
+
+
 \section*{Bibliograf\'ia}
 - \textbf{''El gen egoista'' de Richard Dawkins}. Me he inspirado en \'el al realizar el ejemplo de egoistas, altruistas y precavidos. En su libro hay muchos m\'as ejemplos interesantes de c\'omo evolucionan los patrones de comportamiento en la naturaleza.
 

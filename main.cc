@@ -94,7 +94,7 @@ int main(int argc, char** argv){
 #endif
   antisimetriza(influencia_vecinos,N_posibles_estados,N_posibles_estados);
   const int longitud_paso=10;
-  const int numero_pasos=1000;
+  const int numero_pasos=100000;
   modelo1.set_influencia_primeros_vecinos(influencia_vecinos);
 
 
