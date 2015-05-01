@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 
+//Depuración
 #define NDEBUG
 #ifndef NDEBUG
 #   define ASSERT(condition, message) \
@@ -27,23 +28,48 @@
 //#define ESPINES
 
 
+//uso un template(plantilla) para que se puedan usar estados definidos como texto, números u objetos abstractos.
 template< size_t M, size_t N, typename T = string>
 class modelo
 {
+/*
+ *	Clase modelo
+ *	tiene los métodos y variables necesarias para realizar las simulaciones
+ *     de una forma más cómoda.
+*/
+
+
 public:
   modelo();
-  void definir_posibles_estados(int N_posibles_estados, T *posibles_estados);
+  void definir_posibles_estados(int N_posibles_estados, T *posibles_estados);	
+  //llena la matriz con estados escogidos al azar entre los posibles.
   void llenar();
+
+  //Métodos de acceso a los valores de la matriz (se accede como matriz(fila,columna) en vez de matriz[fila][columna] empezando por (0,0).
   inline T& operator()( size_t row_index, size_t col_index );
   inline const T& operator()( size_t row_index, size_t col_index ) const;
   inline T& at( size_t row_index, size_t col_index );
   inline const T& at( size_t row_index, size_t col_index ) const;
+
+
+  //métodos importantes
+  //-------------------
   void cambiar_estado();
+  //calcula la probabilidad con las fórmulas del algoritmo de Metrópolis.
   double probabilidad(double E_inicial, double E_final);
   double energia();
+  //este método no está implementado
   double entropia();
+  //convierte la matriz a una cadena de caracteres para mostrarla en pantalla con cout.
   string to_string();
+  //devuelve un vector con los primeros vecinos (arriba, derecha, abajo, izquierda)
   int **obtener_primeros_vecinos(int fila, int columna);
+  //mira cuantos elementos hay en cada estado y lo guarda en la variable cantidades_por_estado
+  void contar_estados();
+
+
+  //métodos para cambiar los valores de los parámetros, y para obtenerlos.
+  //-------------------
   void set_temp(double new_value);
   void set_kb(double new_value);
   void set_A_prob(double new_value);
@@ -55,23 +81,28 @@ public:
   double get_A_prob();
   double get_influencia_externa();
   T get_condicion_externa();
-  int* get_cantidad_estado();
-  void contar_estados();
+  int* get_cantidades_por_estado();
 
 
 private:
+  //parámetros del sistema (Temperatura, constante de Boltzman, parámetro A de las ecuaciones de Metrópolis.
   double temp;
   double kb;
   double A_prob;
   T **estado;
+  //dimensiones de la matriz 2D
   int filas;
   int columnas;
   int N_posibles_estados;
+  //posibles estados en los que puede estar un elemento del sistema
   T *posibles_estados;
+  //Campo magnético externo o similar (y si influencia sobre el sistema): H,m
   double influencia_externa;
   T condicion_externa;
+  //Como interactúan los elementos entre sí. Es una matriz (elemento1 con elemento1, elemento1 con elemento2...)
   double **influencia_primeros_vecinos;
-  int *cantidad_estado;
+  //cuántos estados hay de cada tipo
+  int *cantidades_por_estado;
 };
 
 
@@ -91,6 +122,9 @@ private:
 TEMPLATE
 MODELO::modelo()
 {
+/*
+*	Creador
+*/
   this->filas = (int)M;
   this->columnas = (int)N;
   estado = new T*[this->filas];
@@ -104,14 +138,20 @@ MODELO::modelo()
 TEMPLATE
 void MODELO::definir_posibles_estados(int N_posibles_estados_in, T *posibles_estados_in)
 {
+/*
+*   Se definen los posibles estados.
+*/
   this->posibles_estados = posibles_estados_in;
   this->N_posibles_estados = N_posibles_estados_in;
-  this->cantidad_estado = new int[N_posibles_estados_in];
+  this->cantidades_por_estado = new int[N_posibles_estados_in];
 }
 
 TEMPLATE
 void MODELO::llenar()
 {
+/*
+*  Llena la matriz de estados con estados aleatorios escogidos entre los posibles estados.
+*/
   srand(time(NULL));
   srand(rand());
   int random_num=0;
@@ -131,6 +171,9 @@ TEMPLATE
 inline T&
 MODELO::at( size_t row_index, size_t col_index )
 {
+/*
+*    Este método no lo uso para nada, pero he visto que en librerías de matrices lo definen para usarlo en el operador()
+*/
     ASSERT(0<=row_index,"");
     ASSERT(row_index<this->filas,"");
     ASSERT(0<=col_index,"");
@@ -143,6 +186,9 @@ TEMPLATE
 const inline T&
 MODELO::at( size_t row_index, size_t col_index ) const
 {
+/*
+*	Lo mismo que arriba
+*/
     ASSERT(0<=row_index,"");
     ASSERT(row_index<this->filas,"");
     ASSERT(0<=col_index,"");
@@ -154,6 +200,9 @@ TEMPLATE
 inline T&
 MODELO::operator()( size_t row_index, size_t col_index )
 {
+/*
+*   Permite acceder a los valores de la matriz con paréntesis.
+*/
     ASSERT(0<=row_index,"");
     ASSERT(row_index<this->filas,"");
     ASSERT(0<=col_index,"");
@@ -166,6 +215,9 @@ TEMPLATE
 const inline T&
 MODELO::operator()( size_t row_index, size_t col_index ) const
 {
+/*
+*	Lo mismo. A esta función se la llama cuando se usa en una zona de constantes.
+*/
     ASSERT(0<=row_index,"");
     ASSERT(row_index<this->filas,"");
     ASSERT(0<=col_index,"");
@@ -177,6 +229,9 @@ MODELO::operator()( size_t row_index, size_t col_index ) const
 TEMPLATE
 void MODELO::cambiar_estado()
 {
+/*
+*     Cambia el estado de una posición aleatoria por un estado aleatorio. Para ello usa la probabilidad(por lo que tiene que obtener las energías).
+*/
   srand(time(NULL));
   srand(rand());
   int fila;
@@ -255,6 +310,9 @@ void MODELO::cambiar_estado()
 TEMPLATE
 string MODELO::to_string()
 {
+/*
+*    Permite mostrar la matriz en pantalla (para depurar)
+*/
   string output="";
   for (int fila=0; fila<this->filas; fila++)
   {
@@ -270,6 +328,9 @@ string MODELO::to_string()
 TEMPLATE
 double MODELO::energia()
 {
+/*
+*	Calcula la energía mediante una expresión tipo Landau.
+*/
   int indice, indice_v, fila, columna;
   double E=0;
   for (int fila=0; fila<this->filas; fila++)
@@ -284,7 +345,7 @@ double MODELO::energia()
       }
       int **vecinos;      
       vecinos = obtener_primeros_vecinos(fila, columna);
-      if (estado_ == this->condicion_externa)
+      if (estado_ == this->condicion_externa)    //no lo hago con sumatorios, sino con condicionales para poder generalizar el proceso
       {
         E -= this->influencia_externa;
       }
@@ -309,6 +370,9 @@ double MODELO::energia()
 TEMPLATE
 double MODELO::probabilidad(double E_inicial, double E_final)
 {
+/*
+*     Se calcula la probabilidad con el método de Metrópolis
+*/
   double prob;
   if (E_inicial>=E_final) prob=this->A_prob;
   else{
@@ -323,12 +387,18 @@ double MODELO::probabilidad(double E_inicial, double E_final)
 TEMPLATE
 double MODELO::entropia()
 {
+/*
+*	No implementado
+*/
   return 0;
 }
 
 TEMPLATE
 int** MODELO::obtener_primeros_vecinos(int fila, int columna)
 {
+/*
+*	devuelve un vector con los primeros vecinos (^, ->, v, <-)
+*/
   int** vecinos = new int*[4];
   for (int vecino=0; vecino<4; vecino++)
   {
@@ -353,9 +423,12 @@ int** MODELO::obtener_primeros_vecinos(int fila, int columna)
 TEMPLATE
 void MODELO::contar_estados()
 {
+/*
+*	Mira cuantos elementos están en cada estado.
+*/
   for (int num_estado=0; num_estado<this->N_posibles_estados; num_estado++)
   {
-    cantidad_estado[num_estado] = 0;  
+    cantidades_por_estado[num_estado] = 0;  
   }
   for (int fila=0; fila<this->filas; fila++)
   {
@@ -364,7 +437,7 @@ void MODELO::contar_estados()
       for (int num_estado=0; num_estado<this->N_posibles_estados; num_estado++)
       {
         T estado = this->estado[fila][columna];
-        if (estado == posibles_estados[num_estado]) cantidad_estado[num_estado]++;
+        if (estado == posibles_estados[num_estado]) cantidades_por_estado[num_estado]++;
       }
     
     }
@@ -414,9 +487,9 @@ void MODELO::set_influencia_primeros_vecinos(double **new_influencia_primeros_ve
 
 
 TEMPLATE
-int* MODELO::get_cantidad_estado()
+int* MODELO::get_cantidades_por_estado()
 {
-  return this->cantidad_estado;
+  return this->cantidades_por_estado;
 }
 
 TEMPLATE
