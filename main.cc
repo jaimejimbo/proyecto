@@ -15,7 +15,7 @@ int main(int argc, char** argv){
   double temp=0;
   if (argc==2) temp=(double)atof(argv[1]);
   //parametros
-  const int N_posibles_estados = 3;
+  const int N_posibles_estados = 4;
   string posibles_estados[N_posibles_estados];
   double **influencia_vecinos = new double*[N_posibles_estados];
   for (int i=0; i<N_posibles_estados; i++)
@@ -31,7 +31,8 @@ int main(int argc, char** argv){
   modelo<size_y,size_x,string> modelo1;
   posibles_estados[0] = "egoista";
   posibles_estados[1] = "altruista";
-  posibles_estados[2] = "precavido";
+  posibles_estados[2] = "copia";
+  posibles_estados[3] = "contrario";
   modelo1.definir_posibles_estados(N_posibles_estados, posibles_estados);
   modelo1.llenar();
   modelo1.set_temp(temp);
@@ -39,17 +40,22 @@ int main(int argc, char** argv){
   modelo1.set_A_prob(1);
   modelo1.set_influencia_externa(0);
   modelo1.set_condicion_externa("precavido");
-  influencia_vecinos[0][0] = -10;
-  influencia_vecinos[1][1] = 5;
-  influencia_vecinos[0][1] = 20;
+  influencia_vecinos[0][0] = 0;
+  influencia_vecinos[1][1] = 1;
+
+  influencia_vecinos[0][1] = 2;
   influencia_vecinos[0][2] = 0;
-  influencia_vecinos[1][2] = 0;
-  influencia_vecinos[2][2] = -1000;
+  influencia_vecinos[1][2] = 1;
+  influencia_vecinos[2][2] = 0;
+ 
+  influencia_vecinos[0][3] = 2;
+  influencia_vecinos[1][3] = -2;
+  influencia_vecinos[2][3] = 0;
+  influencia_vecinos[3][3] = 0;
+
   antisimetriza(influencia_vecinos,N_posibles_estados,N_posibles_estados);
-  influencia_vecinos[2][1] = -1000;
-  influencia_vecinos[2][0] = -1000;
-  const int longitud_paso=1;
-  const int numero_pasos=250;
+  const int longitud_paso=10;
+  const int numero_pasos=1000;
   modelo1.set_influencia_primeros_vecinos(influencia_vecinos);
 
 
