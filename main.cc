@@ -38,8 +38,8 @@ int main(int argc, char** argv){
   modelo1.set_temp(temp);
   modelo1.set_kb(1);
   modelo1.set_A_prob(1);
-  modelo1.set_influencia_externa(0);
-  modelo1.set_condicion_externa("precavido");
+  modelo1.set_influencia_externa(3);
+  modelo1.set_condicion_externa("egoista");
   influencia_vecinos[0][0] = 0;
   influencia_vecinos[1][1] = 1;
 
@@ -47,7 +47,7 @@ int main(int argc, char** argv){
   influencia_vecinos[0][2] = 0;
   influencia_vecinos[1][2] = 1;
   influencia_vecinos[2][2] = 0;
- 
+
   influencia_vecinos[0][3] = 2;
   influencia_vecinos[1][3] = -2;
   influencia_vecinos[2][3] = 0;
@@ -86,9 +86,11 @@ int main(int argc, char** argv){
   int* num_estados;
   cout<<"\n";
   int k=-1;
+  int jj=-1;
   for (int i=0; i<numero_pasos; i++) 
   {
 	k++;
+	jj++;
 	modelo1.cambiar_estado();
         if (k==longitud_paso){
 		modelo1.contar_estados();
@@ -101,7 +103,11 @@ int main(int argc, char** argv){
 		proporciones_t<<"\n";
 		energia_t<<i<<"\t"<<modelo1.energia()<<"\n";
                 k=0;
-	}  
+	} 
+	if (jj>=numero_pasos/2){
+	  modelo1.set_condicion_externa("down");
+	  jj=-1;
+	}
   }
 
   energia_t.close();
