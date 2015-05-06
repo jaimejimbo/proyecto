@@ -38,7 +38,7 @@ int main(int argc, char** argv){
   modelo1.set_temp(temp);
   modelo1.set_kb(1);
   modelo1.set_A_prob(1);
-  modelo1.set_influencia_externa(3);
+  modelo1.set_influencia_externa(0);
   modelo1.set_condicion_externa("egoista");
   influencia_vecinos[0][0] = 0;
   influencia_vecinos[1][1] = 1;
@@ -54,12 +54,11 @@ int main(int argc, char** argv){
   influencia_vecinos[3][3] = 0;
 
   antisimetriza(influencia_vecinos,N_posibles_estados,N_posibles_estados);
-  const int longitud_paso=10;
+  const int longitud_paso=50;
   const int numero_pasos=1000;
   modelo1.set_influencia_primeros_vecinos(influencia_vecinos);
 
-
-
+  
 
   ofstream energia_t,
            entropia_t,
@@ -70,7 +69,7 @@ int main(int argc, char** argv){
   proporciones_t.open("proporciones_t.txt");
   graphs.open("graphs.plot");
 
-	graphs<<"set terminal png size 640,300\nset output \"energia-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset yrange [0:100]\nset grid\n plot ";
+	graphs<<"set terminal png size 640,300\nset output \"energia-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset xlabel(\"pasos\")\nset ylabel(\"Energia[UA]\")\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset xlabel(\"pasos\")\nset ylabel(\"Proporcion[%]\")\nset yrange [0:100]\nset grid\n plot ";
 
   energia_t<<"#paso\tenergia\n";
   entropia_t<<"#paso\tentropia\n";
