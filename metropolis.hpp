@@ -11,7 +11,7 @@
 #include <fstream>
 #include <iostream>
 //#include <assert>
-
+using namespace std;
 //Depuración
 #define NDEBUG
 #ifndef NDEBUG
