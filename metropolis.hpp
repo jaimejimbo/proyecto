@@ -4,28 +4,26 @@
  *
  */
 
+#ifndef _METROP_
+#define _METROP_
+
 #include <cstdlib>
 #include <time.h>
 #include <cmath>
 #include <string>
 #include <fstream>
 #include <iostream>
-//#include <assert>
-using namespace std;
-//Depuración
 #define NDEBUG
-#ifndef NDEBUG
-#   define ASSERT(condition, message) \
-    do { \
-        if (! (condition)) { \
-            std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
-                      << " line " << __LINE__ << ": " << message << std::endl; \
-            std::exit(EXIT_FAILURE); \
-        } \
-    } while (false)
-#else
-#   define ASSERT(condition, message) do { } while (false)
-#endif
+#include <assert.h>
+
+
+class fuera_de_limites:exception{
+	fuera_de_limites();
+}
+
+
+using namespace std;
+
 //#define ESPINES
 
 #define LONG
@@ -177,10 +175,7 @@ MODELO::at( size_t row_index, size_t col_index )
 /*
 *    Este método no lo uso para nada, pero he visto que en librerías de matrices lo definen para usarlo en el operador()
 */
-    ASSERT(0<=row_index,"");
-    ASSERT(row_index<this->filas,"");
-    ASSERT(0<=col_index,"");
-    ASSERT(col_index<this->columnas,"");
+	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new fuera_de_limites();
     return this->estado(row_index, col_index);
 }
 
@@ -192,10 +187,7 @@ MODELO::at( size_t row_index, size_t col_index ) const
 /*
 *	Lo mismo que arriba
 */
-    ASSERT(0<=row_index,"");
-    ASSERT(row_index<this->filas,"");
-    ASSERT(0<=col_index,"");
-    ASSERT(col_index<this->columnas,"");
+	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new fuera_de_limites();
     return this->estado(row_index, col_index);
 }
 
@@ -206,10 +198,7 @@ MODELO::operator()( size_t row_index, size_t col_index )
 /*
 *   Permite acceder a los valores de la matriz con paréntesis.
 */
-    ASSERT(0<=row_index,"");
-    ASSERT(row_index<this->filas,"");
-    ASSERT(0<=col_index,"");
-    ASSERT(col_index<this->columnas,"");
+	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new fuera_de_limites();
     return this->estado(row_index, col_index);
 }
 
@@ -221,10 +210,7 @@ MODELO::operator()( size_t row_index, size_t col_index ) const
 /*
 *	Lo mismo. A esta función se la llama cuando se usa en una zona de constantes.
 */
-    ASSERT(0<=row_index,"");
-    ASSERT(row_index<this->filas,"");
-    ASSERT(0<=col_index,"");
-    ASSERT(col_index<this->columnas,"");
+	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new fuera_de_limites();
     return this->estado(row_index, col_index);
 }
 
@@ -274,10 +260,6 @@ void MODELO::cambiar_estado()
 	    for (int j=0; j<this->N_posibles_estados; j++){
 	      if (this->posibles_estados[j] == vecino_) indice_v=j;
 	    }
-	    ASSERT(indice>=0,"indice < 0");
-	    ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
-	    ASSERT(indice_v>=0,"indice_v < 0");
-	    ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
 
 	    E_inicial -= this->influencia_primeros_vecinos[indice][indice_v];
 	  }
@@ -302,10 +284,6 @@ void MODELO::cambiar_estado()
 	    for (int j=0; j<this->N_posibles_estados; j++){
 	      if (this->posibles_estados[j] == vecino_) indice_v=j;
 	    }
-	    ASSERT(indice>=0,"indice < 0");
-	    ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
-	    ASSERT(indice_v>=0,"indice_v < 0");
-	    ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
 
 	    E_final -= this->influencia_primeros_vecinos[indice][indice_v];
 	  }
@@ -366,10 +344,10 @@ double MODELO::energia()
 	for (int j=0; j<this->N_posibles_estados; j++){
 	  if (this->posibles_estados[j] == vecino_) indice_v=j;
 	}
-	ASSERT(indice>=0,"indice < 0");
-	ASSERT(indice<this->N_posibles_estados,"indice > N_posibles_estados");
-	ASSERT(indice_v>=0,"indice_v < 0");
-	ASSERT(indice_v<this->N_posibles_estados,"indice_v > N_posibles_estados");
+	assert(indice>=0);
+	assert(indice<this->N_posibles_estados);
+	assert(indice_v>=0);
+	assert(indice_v<this->N_posibles_estados);
 
         E -= this->influencia_primeros_vecinos[indice][indice_v];
       }
@@ -390,8 +368,7 @@ double MODELO::probabilidad(double E_inicial, double E_final)
     if (this->temp != 0 && this->kb != 0) prob=this->A_prob*exp(-abs(E_inicial-E_final)/(this->temp*this->kb));
     else prob=0.0;
   }
-  ASSERT(0<=prob,"Fallo al calcular la probabilidad <0");
-  ASSERT(prob<=1,"Fallo al calcular la probabilidad >1");
+  assert(0<=prob && 1>=prob);
   return prob;
 }
 
@@ -479,8 +456,7 @@ void MODELO::set_influencia_externa(double new_influencia_externa)
 TEMPLATE
 void MODELO::set_A_prob(double new_A)
 {
-  ASSERT(0<=new_A,"El parámetro A tiene que estar entre 0 y 1");
-  ASSERT(new_A<=1,"El parámetro A tiene que estar entre 0 y 1");
+  assert(0<=new_A && 1>=new_A);
   this->A_prob = new_A;
 }
 
@@ -532,3 +508,5 @@ T MODELO::get_condicion_externa()
 {
 	return this->condicion_externa;
 }
+
+#endif

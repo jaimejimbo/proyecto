@@ -1,7 +1,7 @@
 NAME = proyecto
 CC = g++
 CFLAGS = -g #-Wall
-SOURCES = main.cc
+SOURCES = main.cpp
 OBJS = main.o
 
 $(OBJS): $(SOURCES)
