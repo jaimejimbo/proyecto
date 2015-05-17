@@ -80,9 +80,7 @@ public:
   double get_influencia_externa();
   T get_condicion_externa();
   int* get_cantidades_por_estado();
-  T *create_iterator();
-  void operator++(T*);
-  
+
 
 private:
   //parámetros del sistema (Temperatura, constante de Boltzman, parámetro A de las ecuaciones de Metrópolis.
@@ -103,10 +101,7 @@ private:
   double **influencia_primeros_vecinos;
   //cuántos estados hay de cada tipo
   int *cantidades_por_estado;
-  int iter_row, iter_col;
-  T *iterator;
 };
-
 
 
 
@@ -135,8 +130,6 @@ MODELO::modelo()
   {
     estado[fila] = new T[this->columnas];
   }
-  this->iter_row=0;
-  this->iter_col=0;
 }
 
 
@@ -434,17 +427,6 @@ void MODELO::contar_estados()
     
     }
   }
-}
-
-
-TEMPLATE
-T* MODELO::create_iterator(){
-	return this->iterator;
-}
-
-TEMPLATE
-void MODELO::operator++(T* iterator){
-	
 }
 
 
