@@ -15,11 +15,8 @@
 #include <iostream>
 #define NDEBUG
 #include <assert.h>
+#include <stdexcept>
 
-
-class fuera_de_limites:exception{
-	fuera_de_limites();
-}
 
 
 using namespace std;
@@ -175,7 +172,7 @@ MODELO::at( size_t row_index, size_t col_index )
 /*
 *    Este método no lo uso para nada, pero he visto que en librerías de matrices lo definen para usarlo en el operador()
 */
-	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new fuera_de_limites();
+	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new out_of_range("");
     return this->estado(row_index, col_index);
 }
 
@@ -187,7 +184,7 @@ MODELO::at( size_t row_index, size_t col_index ) const
 /*
 *	Lo mismo que arriba
 */
-	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new fuera_de_limites();
+	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new out_of_range("");
     return this->estado(row_index, col_index);
 }
 
@@ -198,7 +195,7 @@ MODELO::operator()( size_t row_index, size_t col_index )
 /*
 *   Permite acceder a los valores de la matriz con paréntesis.
 */
-	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new fuera_de_limites();
+	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new out_of_range("");
     return this->estado(row_index, col_index);
 }
 
@@ -210,7 +207,7 @@ MODELO::operator()( size_t row_index, size_t col_index ) const
 /*
 *	Lo mismo. A esta función se la llama cuando se usa en una zona de constantes.
 */
-	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new fuera_de_limites();
+	if ((row_index<0 || row_index>=this->filas) || (col_index<0 || col_index>=this->columnas)) throw new out_of_range("");
     return this->estado(row_index, col_index);
 }
 

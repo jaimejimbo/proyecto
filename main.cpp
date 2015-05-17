@@ -69,9 +69,9 @@ int main(int argc, char** argv){
   proporciones_t.open("proporciones_t.txt");
   graphs.open("graphs.plot");
 
-	//graphs<<"set terminal png size 640,300\nset output \"energia-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset xlabel(\"pasos\")\nset ylabel(\"Energia[UA]\")\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset xlabel(\"pasos\")\nset ylabel(\"Proporcion[%]\")\nset yrange [0:100]\nset grid\n plot ";
+	graphs<<"set terminal png size 640,300\nset output \"energia-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset xlabel(\"pasos\")\nset ylabel(\"Energia[UA]\")\nset grid\nplot \"energia_t.txt\" with lines\nset output \"proporciones-kbT"<<modelo1.get_temp()*modelo1.get_kb()<<"-A"<<modelo1.get_A_prob()<<"-inf"<<modelo1.get_influencia_externa()<<"-"<<modelo1.get_condicion_externa()<<".png\"\nset xlabel(\"pasos\")\nset ylabel(\"Proporcion[%]\")\nset yrange [0:100]\nset grid\n plot ";
 
-	graphs<<"set terminal png size 640.300\nset output \"prueba.png\"\n
+	//graphs<<"set terminal png size 640.300\nset output \"prueba.png\"\n;
 
   energia_t<<"#paso\tenergia\n";
   entropia_t<<"#paso\tentropia\n";
